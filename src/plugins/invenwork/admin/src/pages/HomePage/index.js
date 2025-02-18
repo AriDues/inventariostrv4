@@ -3,6 +3,7 @@ import { HeaderLayout, ContentLayout, Button, DatePicker } from '@strapi/design-
 import { ArrowLeft } from '@strapi/icons';
 import { useHistory } from 'react-router-dom';
 import FormEvento from '../../components/home/FormEvento';
+import jsPDF from 'jspdf';
 import pluginId from '../../pluginId';
 
 const HomePage = () => {
@@ -55,9 +56,129 @@ const HomePage = () => {
     console.log(`Finalizar evento de la tarjeta ${cardId}`);
   };
 
-  const handlePrintDeliveryNote = (cardId) => {
-    console.log(`Imprimir nota de entrega de la tarjeta ${cardId}`);
+  const handlePrintPDF = () => {
+    const doc = new jsPDF();
+  
+    // Cabecera del documento
+    doc.setFontSize(18);
+    doc.text('Nota de Entrega', 10, 10);
+  
+    // Información del evento
+    doc.setFontSize(12);
+    const evento = datosForm.evento || {};
+    const eventoAttrs = evento.attributes || {};
+  
+    doc.text(`Nombre del evento: ${eventoAttrs.nombre || 'N/A'}`, 10, 20);
+    doc.text(`Fecha de inicio: ${eventoAttrs.fechaInicio || 'N/A'}`, 10, 30);
+    doc.text(`Fecha de fin: ${eventoAttrs.fechaFin || 'N/A'}`, 10, 40);
+    doc.text(`Hora del evento: ${eventoAttrs.horaInicio || 'N/A'}`, 10, 50);
+    doc.text(`Locación: ${eventoAttrs.locacion || 'N/A'}`, 10, 60);
+  
+    // Título de la tabla
+    doc.setFontSize(16);
+    doc.text('Productos Asignados:', 10, 74);
+  
+    // Configuración de la tabla
+    const startX = 10;
+    let startY = 80;
+    const cellHeight = 10;
+  
+    // Definir anchos de columnas
+    const colWidths = {
+      sku: 40,
+      nombre: 70,
+      cantidad: 30,
+    };
+  
+    // Dibujar encabezado de la tabla
+    doc.setFontSize(12);
+      // 1. Color de fondo = negro
+  doc.setFillColor(0, 0, 0);          // Relleno negro
+  // 2. Color del texto = blanco
+  doc.setTextColor(255, 255, 255);    // Texto blanco
+
+  // Datos de las cabeceras (texto, posición x, ancho)
+  const headers = [
+    { text: 'SKU',      x: startX,                                          width: colWidths.sku },
+    { text: 'Nombre',   x: startX + colWidths.sku,                          width: colWidths.nombre },
+    { text: 'Cantidad', x: startX + colWidths.sku + colWidths.nombre,       width: colWidths.cantidad },
+  ];
+
+  // Dibujar cada celda de la cabecera
+  headers.forEach((header) => {
+    doc.rect(header.x, startY, header.width, cellHeight, 'FD'); 
+    // 'FD' => fill & draw (rellenar y dibujar el borde)
+    // Agregar el texto (2 px de margen horizontal y ~3 px vertical)
+    doc.text(header.text, header.x + 2, startY + cellHeight - 3);
+  });
+
+  // Pasamos a la siguiente línea, debajo del encabezado
+  startY += cellHeight;
+
+  // --------------------------------
+  // DIBUJAR FILAS DE LA TABLA
+  // --------------------------------
+
+  // 3. Revertir color de texto a negro para el contenido
+  doc.setTextColor(0, 0, 0);
+  
+    // Dibujar cada fila de productos
+    datosForm.productos?.forEach((producto) => {
+      const productoAttrs = producto.attributes || {};
+      const row = [
+        productoAttrs.Sku || 'N/A',
+        productoAttrs.Nombre || 'N/A',
+        `${producto.quantity || '0'}`,
+      ];
+  
+      let currentX = startX;
+      row.forEach((cellText, index) => {
+        // Obtener ancho de celda según columna
+        const width = Object.values(colWidths)[index];
+        // Dibujar borde de la celda
+        doc.rect(currentX, startY, width, cellHeight);
+        // Agregar texto con margen
+        doc.text(cellText, currentX + 2, startY + cellHeight - 3);
+        currentX += width;
+      });
+      startY += cellHeight;
+    });  
+    
+    // ---------------------------
+    // Agregar casillas para firmas
+    // ---------------------------
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const signatureBoxWidth = 60; // ancho de cada casilla
+    const signatureBoxHeight = 10; // alto de cada casilla
+    const gapBetweenBoxes = 20; // separación entre las casillas
+  
+    // Definir posición vertical para las firmas (se deja un espacio luego de la tabla)
+    const signatureY = startY + 10;
+  
+    // Posición para la primera casilla (Administrador de Almacén)
+    const leftBoxX = 10;
+    // Posición para la segunda casilla (Operario)
+    const rightBoxX = leftBoxX + signatureBoxWidth + gapBetweenBoxes;
+  
+    // Dibujar casilla para "Administrador de Almacén"
+    doc.rect(leftBoxX, signatureY, signatureBoxWidth, signatureBoxHeight);
+    // Agregar etiqueta debajo de la casilla (centrada aproximadamente)
+    doc.text('Administrador de Almacén', leftBoxX, signatureY + signatureBoxHeight + 10);
+  
+    // Dibujar casilla para "Operario"
+    doc.rect(rightBoxX, signatureY, signatureBoxWidth, signatureBoxHeight);
+    // Agregar etiqueta debajo de la casilla (centrada aproximadamente)
+    doc.text('Operario', rightBoxX, signatureY + signatureBoxHeight + 10);
+
+    // Agregar Footer de información
+    doc.setFontSize(10);
+    doc.text('Generado desde Sistema de Inventario', 10, startY + 90);
+  
+    // Guardar el PDF
+    doc.save('nota_de_entrega.pdf');
   };
+  
+  
 
   return (
     <div>
@@ -129,12 +250,20 @@ const HomePage = () => {
                 </table>
               </div>
             </div>
-            <button
-              onClick={() => setIsCardVisible(false)}
-              style={styles.closeButton}
-            >
-              Cerrar
-            </button>
+            <div style={styles.buttonContainer}>
+              <button
+                onClick={() => setIsCardVisible(false)}
+                style={styles.closeButton}
+              >
+                Cerrar
+              </button>
+              <button
+                onClick={handlePrintPDF}
+                style={styles.printButton}
+              >
+                Imprimir PDF
+              </button>
+            </div>
           </div>
         )}
         {!isFormVisible && !isCardVisible && (
@@ -322,6 +451,14 @@ const styles = {
     borderRadius: '4px',
     cursor: 'pointer',
     marginTop: '16px',
+  },
+  printButton: {
+    backgroundColor: '#007bff',
+    color: 'white',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
   },
 };
 
