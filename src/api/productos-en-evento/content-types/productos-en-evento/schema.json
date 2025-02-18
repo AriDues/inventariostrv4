@@ -1,0 +1,44 @@
+{
+  "kind": "collectionType",
+  "collectionName": "productos_en_eventos",
+  "info": {
+    "singularName": "productos-en-evento",
+    "pluralName": "productos-en-eventos",
+    "displayName": "ProductosEnEvento",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "cantidad": {
+      "type": "integer"
+    },
+    "cantidad_retornada": {
+      "type": "integer"
+    },
+    "estatus": {
+      "type": "enumeration",
+      "enum": [
+        "Pendiente",
+        "Devuelto"
+      ]
+    },
+    "producto": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::producto.producto"
+    },
+    "almacen": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::almacen.almacen"
+    },
+    "evento": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::evento.evento"
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "transferencia_productos",
+  "info": {
+    "singularName": "transferencia-producto",
+    "pluralName": "transferencia-productos",
+    "displayName": "TransferenciaProducto",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "cantidad": {
+      "type": "integer"
+    },
+    "fecha": {
+      "type": "date"
+    },
+    "estatus": {
+      "type": "enumeration",
+      "enum": [
+        "Pendiente",
+        "Completado"
+      ]
+    },
+    "productos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::producto.producto"
+    },
+    "almacens": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::almacen.almacen"
+    }
+  }
+}

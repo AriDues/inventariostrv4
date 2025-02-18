@@ -1,0 +1,29 @@
+{
+  "kind": "collectionType",
+  "collectionName": "stock_almacens",
+  "info": {
+    "singularName": "stock-almacen",
+    "pluralName": "stock-almacens",
+    "displayName": "StockAlmacen",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "cantidad": {
+      "type": "integer"
+    },
+    "productos": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::producto.producto"
+    },
+    "almacenes": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::almacen.almacen"
+    }
+  }
+}

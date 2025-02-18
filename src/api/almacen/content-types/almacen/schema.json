@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "almacens",
+  "info": {
+    "singularName": "almacen",
+    "pluralName": "almacens",
+    "displayName": "Almacen"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nombre": {
+      "type": "string"
+    },
+    "Locacion": {
+      "type": "string"
+    }
+  }
+}
