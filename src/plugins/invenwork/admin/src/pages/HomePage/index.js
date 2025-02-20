@@ -4,6 +4,8 @@ import { ArrowLeft } from '@strapi/icons';
 import { useHistory } from 'react-router-dom';
 import FormEvento from '../../components/home/FormEvento';
 import jsPDF from 'jspdf';
+import EventList from '../../components/home/EventList';
+import EventCard from '../../components/home/EventCard';
 import pluginId from '../../pluginId';
 
 const HomePage = () => {
@@ -177,8 +179,7 @@ const HomePage = () => {
     // Guardar el PDF
     doc.save('nota_de_entrega.pdf');
   };
-  
-  
+
 
   return (
     <div>
@@ -191,9 +192,11 @@ const HomePage = () => {
           </Button>
         }
         primaryAction={
-          <Button onClick={handleCreateNewEvent} variant="default">
-            Crear nuevo evento
-          </Button>
+          !isFormVisible && (
+            <Button onClick={handleCreateNewEvent} variant="default">
+              Crear nuevo evento
+            </Button>
+          )
         }
       />
       <ContentLayout>
@@ -205,104 +208,17 @@ const HomePage = () => {
           />
         )}
         {isCardVisible && (
-          <div style={styles.card}>
-            <h2 style={styles.cardTitle}>Evento Creado</h2>
-            <div style={styles.cardContentContainer}>
-              {/* Columna 1: Detalles del evento */}
-              <div style={styles.column}>
-                <p style={styles.cardContent}>
-                  <strong>Nombre del evento:</strong> {datosForm.evento.attributes.nombre}
-                </p>
-                <p style={styles.cardContent}>
-                  <strong>Fecha de inicio:</strong> {datosForm.evento.attributes.fechaInicio}
-                </p>
-                <p style={styles.cardContent}>
-                  <strong>Fecha de fin:</strong> {datosForm.evento.attributes.fechaFin}
-                </p>
-                <p style={styles.cardContent}>
-                  <strong>Hora del evento:</strong> {datosForm.evento.attributes.HoraInicio}
-                </p>
-                <p style={styles.cardContent}>
-                  <strong>Locación:</strong> {datosForm.evento.attributes.locacion}
-                </p>
-              </div>
-          
-              {/* Columna 2: Productos asignados */}
-              <div style={styles.column}>
-                <h3 style={styles.productTitle}>Productos Asignados</h3>
-                <table style={styles.productTable}>
-                  <thead>
-                    <tr>
-                      <th style={styles.tableHeader}>SKU</th>
-                      <th style={styles.tableHeader}>Nombre</th>
-                      <th style={styles.tableHeader}>Cantidad</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {datosForm.productos.map((producto) => (
-                      <tr key={producto.id} style={styles.tableRow}>
-                        <td style={styles.tableCell}>{producto.attributes.Sku}</td>
-                        <td style={styles.tableCell}>{producto.attributes.Nombre}</td>
-                        <td style={styles.tableCell}>{producto.quantity}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            <div style={styles.buttonContainer}>
-              <button
-                onClick={() => setIsCardVisible(false)}
-                style={styles.closeButton}
-              >
-                Cerrar
-              </button>
-              <button
-                onClick={handlePrintPDF}
-                style={styles.printButton}
-              >
-                Imprimir PDF
-              </button>
-            </div>
-          </div>
+          <EventCard
+            datosForm={datosForm}
+            handlePrintPDF={handlePrintPDF}
+            setIsCardVisible={setIsCardVisible}
+          />
         )}
         {!isFormVisible && !isCardVisible && (
-          <div style={styles.gridContainer}>
-            {cardsData.map((card) => (
-              <div key={card.id} style={styles.card}>
-                <h2 style={styles.cardTitle}>{card.title}</h2>
-                <p style={styles.cardContent}>
-                  <strong>Fecha:</strong> {card.date}
-                </p>
-                <p style={styles.cardContent}>
-                  <strong>Hora:</strong> {card.time}
-                </p>
-                <p style={styles.cardContent}>
-                  <strong>Locación:</strong> {card.location}
-                </p>
-                <div style={styles.buttonContainer}>
-                  <button
-                    onClick={() => handleViewMore(card.id)}
-                    style={styles.actionButton}
-                  >
-                    Ver más
-                  </button>
-                  <button
-                    onClick={() => handleFinish(card.id)}
-                    style={styles.actionButton}
-                  >
-                    Finalizar
-                  </button>
-                  <button
-                    onClick={() => handlePrintDeliveryNote(card.id)}
-                    style={styles.actionButton}
-                  >
-                    Imprimir nota de entrega
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <EventList
+            setIsCardVisible={setIsCardVisible}
+            setDatosForm={setDatosForm}
+          />
         )}
       </ContentLayout>
     </div>
@@ -343,33 +259,6 @@ const styles = {
     cursor: 'pointer',
     fontSize: '16px',
   },
-  /* card: {
-    border: '1px solid #e0e0e0',
-    borderRadius: '4px',
-    padding: '20px',
-    backgroundColor: '#f9f9f9',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px',
-  }, 
-  cardTitle: {
-    fontSize: '20px',
-    fontWeight: 'bold',
-    marginBottom: '8px',
-  },
-  cardContent: {
-    fontSize: '14px',
-    lineHeight: '1.5',
-  },
-  closeButton: {
-    backgroundColor: '#dc3545',
-    color: 'white',
-    padding: '10px 20px',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    marginTop: '16px',
-  },*/
   gridContainer: {
     display: 'grid',
     gridTemplateColumns: 'repeat(4, 1fr)', // 4 columnas
@@ -454,6 +343,27 @@ const styles = {
   },
   printButton: {
     backgroundColor: '#007bff',
+    color: 'white',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  },
+  buttonContainerRow: {
+    display: 'flex', // Usar flexbox para alinear los botones en una fila
+    justifyContent: 'space-between', // Separar los botones a los extremos
+    marginTop: '16px', // Mantener el margen superior
+  },
+  closeButtonRight: {
+    backgroundColor: '#dc3545',
+    color: 'white',
+    padding: '10px 20px',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  },
+  printButtonLeft: {
+    backgroundColor: '#4945ff',
     color: 'white',
     padding: '10px 20px',
     border: 'none',
