@@ -758,7 +758,9 @@ export interface ApiEventoEvento extends Schema.CollectionType {
     nombre: Attribute.String;
     locacion: Attribute.String;
     fechaInicio: Attribute.Date;
-    estatus: Attribute.Enumeration<['Programado', 'En curso', 'Finalizado']>;
+    estatus: Attribute.Enumeration<
+      ['Programado', 'En curso', 'Finalizado Parcialmente', 'Finalizado']
+    >;
     fechaFin: Attribute.Date;
     HoraInicio: Attribute.Time;
     createdAt: Attribute.DateTime;
@@ -879,7 +881,7 @@ export interface ApiProductosEnEventoProductosEnEvento
   attributes: {
     cantidad: Attribute.Integer;
     cantidad_retornada: Attribute.Integer;
-    estatus: Attribute.Enumeration<['Pendiente', 'Devuelto']>;
+    estatus: Attribute.Enumeration<['Pendiente', 'Faltante', 'Devuelto']>;
     producto: Attribute.Relation<
       'api::productos-en-evento.productos-en-evento',
       'oneToMany',
@@ -895,6 +897,7 @@ export interface ApiProductosEnEventoProductosEnEvento
       'oneToMany',
       'api::evento.evento'
     >;
+    cantidad_faltante: Attribute.Integer;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

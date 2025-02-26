@@ -29,7 +29,7 @@ const FormEvento = ({ setIsFormVisible, setIsCardVisible, setDatosForm }) => {
     };
   }, []);
 
-    useEffect(() => {
+  useEffect(() => {
          // Función para formatear la hora
         const formatearHora = (hora) => {
             // Dividir la hora en horas y minutos
@@ -57,13 +57,28 @@ const FormEvento = ({ setIsFormVisible, setIsCardVisible, setDatosForm }) => {
 
   }, [eventTime, startDate]); 
 
+  // Obtener la fecha actual del sistema
+  const fechaActual = new Date();
+
+  // Obtener las fechas de inicio y fin del evento
+  const fechaInicio = new Date(startDate);
+  const fechaFin = new Date(endDate);
+
+  // Determinar el estado del evento basado en las fechas
+  let estatusEvento;
+  if (fechaActual >= fechaInicio && fechaActual <= fechaFin) {
+    estatusEvento = "En curso";
+  } else if (fechaActual < fechaInicio) {
+    estatusEvento = "Programado";
+  }
+
   const handleSubmit = async (e) => {
         e.preventDefault(); // Evitar recarga de la página
         const obj = {
             nombre : eventName,
             locacion : location,
             fechaInicio : startDate,
-            estatus : "Programado",
+            estatus : estatusEvento,
             fechaFin : endDate,
             HoraInicio : horaFormateada,
         }
@@ -110,7 +125,7 @@ const FormEvento = ({ setIsFormVisible, setIsCardVisible, setDatosForm }) => {
     
         // Ejecutar todas las solicitudes de productos
         const productoData = await Promise.all(productosPromises);
-        console.log(JSON.stringify(productoData, null, 2));
+        //console.log(JSON.stringify(productoData, null, 2));
     
         if (productoData.length === 0) {
             throw new Error('Error al agregar productos en evento');
@@ -121,7 +136,7 @@ const FormEvento = ({ setIsFormVisible, setIsCardVisible, setDatosForm }) => {
             productos: products
         }
 
-        console.log(JSON.stringify(datosForm, null, 2))
+        //console.log(JSON.stringify(datosForm, null, 2))
     
         // 3️⃣ Enviar los datos al componente padre
         setDatosForm(datosForm); 
@@ -129,7 +144,7 @@ const FormEvento = ({ setIsFormVisible, setIsCardVisible, setDatosForm }) => {
         setIsFormVisible(false);
         setIsCardVisible(true);
   
-        console.log('Evento y productos guardados correctamente');
+        //console.log('Evento y productos guardados correctamente');
     } catch (error) {
       console.error('Error en handleSubmit:', error);
     }

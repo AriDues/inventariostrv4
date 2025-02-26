@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { Button } from '@strapi/design-system';
+import { Cursor } from "@strapi/icons";
 
 const styles = {
   gridContainer: {
@@ -12,6 +14,7 @@ const styles = {
     borderRadius: "4px",
     padding: "20px",
     backgroundColor: "#f9f9f9",
+    Cursor:"pointer"
   },
   cardTitle: {
     fontSize: "20px",
@@ -67,13 +70,14 @@ const transformProducts = (products) => {
     }));
 };
 
-const EventList = ({setIsCardVisible, setDatosForm}) => {
+const EventList = ({setIsCardVisible, setDatosForm, setEventStatus}) => {
   const [events, setEvents] = useState([]); // Almacena los eventos
   const [productsInEvents, setProductsInEvents] = useState([]); // Almacena los productos en eventos
   const [currentPage, setCurrentPage] = useState(1); // Página actual
   const [totalPages, setTotalPages] = useState(1); // Total de páginas
   const [selectedProductsInEvents, setSelectedProductsInEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState({});
+  const [selectedFilter, setSelectedFilter] = useState("Programado");
   const eventsPerPage = 8; // Eventos por página
 
   // Obtener datos de las APIs
@@ -82,7 +86,7 @@ const EventList = ({setIsCardVisible, setDatosForm}) => {
       try {
         // Obtener eventos con paginación  &sort=nombre:ASC
         const eventosResponse = await fetch(
-          `/api/eventos?pagination[page]=${currentPage}&pagination[pageSize]=${eventsPerPage}`
+          `/api/eventos?pagination[page]=${currentPage}&pagination[pageSize]=${eventsPerPage}&filters[estatus][$eq]=${selectedFilter}`
         );
         const eventosData = await eventosResponse.json();
         setEvents(eventosData.data);
@@ -119,7 +123,8 @@ const EventList = ({setIsCardVisible, setDatosForm}) => {
     };
 
     fetchData();
-  }, [currentPage]); // Volver a cargar cuando cambie la página
+
+  }, [currentPage, selectedFilter]); // Volver a cargar cuando cambie la página
 
   useEffect(() => {
 
@@ -130,7 +135,7 @@ const EventList = ({setIsCardVisible, setDatosForm}) => {
         productos: orderProduct,
     });
 
-    console.log(" orderProduct***** " + JSON.stringify(orderProduct, null, 2));
+    //console.log(" orderProduct***** " + JSON.stringify(orderProduct, null, 2));
 
     if (selectedEvent && selectedProductsInEvents.length > 0) {
         setIsCardVisible(true);
@@ -165,8 +170,33 @@ const EventList = ({setIsCardVisible, setDatosForm}) => {
   return (
     <div>
       <div style={styles.gridContainer}>
+        <div style={{gridColumn: "span 4", textAlign: "left", marginBottom: "20px", display: "block" }}>
+          <h3 style={{ marginBottom: "10px" }}>Filtros</h3>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            {["Programado", "En curso", "Finalizado Parcialmente", "Finalizado"].map((filter) => (
+              <Button
+                key={filter}
+                variant={selectedFilter === filter ? "default" : "tertiary"} // Cambia color
+                onClick={() => setSelectedFilter(filter)} // Cambia estado
+              >
+                {filter}
+              </Button>
+            ))}
+          </div>
+        </div>
+
         {events.map((event) => (
-          <div key={event.id} style={styles.card}>
+          <div 
+            key={event.id} 
+            style={styles.card}
+            onClick={
+              () => {
+                setEventStatus(event.attributes.estatus);
+                setSelectedEvent(event);
+                setSelectedProductsInEvents(productsInEvents[event.id]);
+              }
+          } 
+          >
             <h2 style={styles.cardTitle}>{event.attributes.nombre}</h2>
             <p style={styles.cardContent}>
               <strong>Duración:</strong>{" "}
@@ -179,6 +209,7 @@ const EventList = ({setIsCardVisible, setDatosForm}) => {
                 <button 
                     onClick={
                         () => {
+                            setEventStatus(event.attributes.estatus);
                             setSelectedEvent(event);
                             setSelectedProductsInEvents(productsInEvents[event.id]);
                         }

@@ -1,13 +1,16 @@
+import React from 'react';
 import { prefixPluginTranslations } from '@strapi/helper-plugin';
 import pluginPkg from '../../package.json';
 import pluginId from './pluginId';
 import Initializer from './components/Initializer';
 import PluginIcon from './components/PluginIcon';
+import Productos from './pages/Productos'; // Importar la nueva página
 
 const name = pluginPkg.strapi.name;
 
 export default {
   register(app) {
+    // Agregar el enlace principal del plugin al menú lateral
     app.addMenuLink({
       to: `/plugins/${pluginId}`,
       icon: PluginIcon,
@@ -17,17 +20,24 @@ export default {
       },
       Component: async () => {
         const component = await import(/* webpackChunkName: "[request]" */ './pages/App');
-
         return component;
       },
-      permissions: [
-        // Uncomment to set the permissions of the plugin here
-        // {
-        //   action: '', // the action name should be plugin::plugin-name.actionType
-        //   subject: null,
-        // },
-      ],
+      permissions: [], // Permisos para esta opción
     });
+
+    // Agregar un nuevo enlace al menú
+    app.addMenuLink({
+      to: `/plugins/${pluginId}/productos`, // Ruta de la nueva página
+      icon: PluginIcon, // Icono del menú (puedes usar otro si lo deseas)
+      intlLabel: {
+        id: `${pluginId}.productos`, // ID para la traducción
+        defaultMessage: 'Equipos', // Texto del enlace
+      },
+      Component: Productos, // Componente de la nueva página
+      permissions: [], // Permisos para esta opción
+    });
+
+    // Registrar el plugin
     app.registerPlugin({
       id: pluginId,
       initializer: Initializer,
@@ -37,6 +47,7 @@ export default {
   },
 
   bootstrap(app) {},
+
   async registerTrads({ locales }) {
     const importedTrads = await Promise.all(
       locales.map((locale) => {

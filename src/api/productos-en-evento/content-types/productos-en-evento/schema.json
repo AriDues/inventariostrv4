@@ -22,6 +22,7 @@
       "type": "enumeration",
       "enum": [
         "Pendiente",
+        "Faltante",
         "Devuelto"
       ]
     },
@@ -39,6 +40,9 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::evento.evento"
+    },
+    "cantidad_faltante": {
+      "type": "integer"
     }
   }
 }

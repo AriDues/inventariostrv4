@@ -2,70 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { HeaderLayout, ContentLayout, Button, DatePicker } from '@strapi/design-system';
 import { ArrowLeft } from '@strapi/icons';
 import { useHistory } from 'react-router-dom';
-import FormEvento from '../../components/home/FormEvento';
-import EventList from '../../components/home/EventList';
-import EventCard from '../../components/home/EventCard';
 import { ToastContainer, toast } from 'react-toastify';
+import GetProductList from '../../components/productos/GetProductList';
+import FormProduct from '../../components/productos/FormProduct';
 import pluginId from '../../pluginId';
 
-const HomePage = () => {
+const Productos = () => {
   const history = useHistory();
-  const [datosForm, setDatosForm] = useState(null);
+  const [data, setData] = useState({
+    Nombre: "",
+    Descripcion: "",
+    Sku: "",
+    Precio: 0,
+    categoria: "",
+  });
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [isCardVisible, setIsCardVisible] = useState(false);
-  const [eventStatus, setEventStatus] = useState(false);
-
-  /* useEffect(() => {
-    console.log('isCardVisible '+ isCardVisible)
-    console.log('datosForm '+ JSON.stringify(datosForm, null, 2))
-  }, [isCardVisible, datosForm]) */
-  
-
-  // Array de datos para las tarjetas (simulación)
-  const cardsData = Array.from({ length: 12 }, (_, index) => ({
-    id: index + 1,
-    title: `Evento ${index + 1}`,
-    date: `2023/10/${index + 1}`,
-    time: '10:00 AM',
-    location: `Locación ${index + 1}`,
-  }));
 
   const handleGoBack = () => {
     setIsFormVisible(false);
-    setIsCardVisible(false);
   };
 
-  const handleCreateNewEvent = () => {
+  const handleCreateNewProduct = () => {
     setIsFormVisible(true);
-    setIsCardVisible(false);
   };
-
-  // Función para formatear la fecha en formato yyyy/MM/dd
-  const formatDate = (date) => {
-    if (!date || !(date instanceof Date)) {
-      return ''; // Si no es un objeto Date válido, devuelve una cadena vacía
-    }
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Los meses van de 0 a 11
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}/${month}/${day}`;
-  };
-
-  // Funciones para los botones de las tarjetas
-  const handleViewMore = (cardId) => {
-    console.log(`Ver más detalles de la tarjeta ${cardId}`);
-  };
-
-  const handleFinish = (cardId) => {
-    console.log(`Finalizar evento de la tarjeta ${cardId}`);
-  };
-
 
   return (
     <div>
       <HeaderLayout
-        title="Registra el próximo evento"
-        subtitle="Inventario por evento"
+        title="Productos"
+        subtitle="Stock de productos"
         navigationAction={
           <Button onClick={handleGoBack} startIcon={<ArrowLeft />} variant="tertiary">
             Atrás
@@ -73,33 +38,18 @@ const HomePage = () => {
         }
         primaryAction={
           !isFormVisible && (
-            <Button onClick={handleCreateNewEvent} variant="default">
-              Crear nuevo evento
+            <Button onClick={handleCreateNewProduct} variant="default">
+              Crear nuevo producto
             </Button>
           )
         }
       />
       <ContentLayout>
         {isFormVisible && (
-          <FormEvento
-            setIsFormVisible={setIsFormVisible}
-            setIsCardVisible={setIsCardVisible}
-            setDatosForm={setDatosForm}
-          />
+          <FormProduct/>
         )}
-        {isCardVisible && (
-          <EventCard
-            datosForm={datosForm}
-            setIsCardVisible={setIsCardVisible}
-            eventStatus={eventStatus}
-          />
-        )}
-        {!isFormVisible && !isCardVisible && (
-          <EventList
-            setIsCardVisible={setIsCardVisible}
-            setDatosForm={setDatosForm}
-            setEventStatus={setEventStatus}
-          />
+        {!isFormVisible && (
+          <GetProductList/>
         )}
       </ContentLayout>
       <ToastContainer />
@@ -254,4 +204,4 @@ const styles = {
   },
 };
 
-export default HomePage;
+export default Productos;
