@@ -33,7 +33,7 @@ const Productos = () => {
         subtitle="Stock de productos"
         navigationAction={
           <Button onClick={handleGoBack} startIcon={<ArrowLeft />} variant="tertiary">
-            Atrás
+            Atrás pikachu
           </Button>
         }
         primaryAction={
