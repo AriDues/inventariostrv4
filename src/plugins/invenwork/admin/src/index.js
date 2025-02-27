@@ -6,7 +6,7 @@ import Initializer from './components/Initializer';
 import PluginIcon from './components/PluginIcon';
 import Productos from './pages/Productos'; // Importar la nueva página
 
-const name = pluginPkg.strapi.name;
+const name = "Inventario"//pluginPkg.strapi.name;
 
 export default {
   register(app) {

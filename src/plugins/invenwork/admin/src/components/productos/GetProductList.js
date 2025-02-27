@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Thead, Tbody, Tr, Td, Th, Select, Box, Pagination } from '@strapi/design-system';
+import {TextInput, Typography, Grid, GridItem, Table, Thead, Tbody, Tr, Td, Th, Select, Box, Pagination, IconButton } from '@strapi/design-system';
+import { Search } from '@strapi/icons';
 import styles from '../../styles/ProductList.module.css'; // Importar estilos CSS Modules
 
 const GetProductList = () => {
     const [productos, setProductos] = useState([]);
     const [categorias, setCategorias] = useState([]);
-    const [filtroCategoria, setFiltroCategoria] = useState('sonido');
+    const [filtroCategoria, setFiltroCategoria] = useState('');
     const [paginaActual, setPaginaActual] = useState(1);
     const [totalProductos, setTotalProductos] = useState(0);
-
     const productosPorPagina = 20;
+    const [filtro, setFiltro] = useState(`/api/productos?pagination[page]=${paginaActual}&pagination[pageSize]=${productosPorPagina}&populate=categoria`);
+
 
     // Obtener productos y categorías
     useEffect(() => {
-
         // Obtener el stock de cada producto
         const fetchProductos = async () => {
             //productos?pagination[page]=1&pagination[pageSize]=20&populate=categoria&filters[categoria][Nombre][$eq]=video
-            const response = await fetch(`/api/productos?pagination[page]=${paginaActual}&pagination[pageSize]=${productosPorPagina}&populate=categoria&filters[categoria][Nombre][$eq]=${filtroCategoria}`);
+            const response = await fetch(filtro);
             const dataProductos = await response.json();
 
             // Obtener el stock de cada producto
@@ -27,7 +28,7 @@ const GetProductList = () => {
                     `/api/stock-almacens?filters[productos][id][$eq]=${producto.id}`
                 );
                 const dataStock = await responseStock.json();
-        console.log('cantidad_faltante', JSON.stringify(dataStock?.data[0]?.attributes?.cantidad, null, 2));
+                console.log('cantidad_faltante', JSON.stringify(dataStock?.data[0]?.attributes?.cantidad, null, 2));
 
             
                 // Verificar si hay stock para el producto
@@ -63,12 +64,13 @@ const GetProductList = () => {
 
         fetchProductos();
         fetchCategorias();
-    }, [paginaActual, filtroCategoria, ]);
+    }, [paginaActual, filtro, ]);
 
     // Manejar cambio de categoría
     const handleFiltroCategoria = (e) => {
-        setFiltroCategoria(e.target.value);
+        //setFiltroCategoria(e.target.value);
         setPaginaActual(1); // Reiniciar a la primera página al cambiar el filtro
+        setFiltro(`/api/productos?pagination[page]=${paginaActual}&pagination[pageSize]=${productosPorPagina}&populate=categoria&filters[categoria][Nombre][$eq]=${e.target.value}`)
     };
 
     // Manejar cambio de página
@@ -81,26 +83,47 @@ const GetProductList = () => {
 
   return (
     <Box className={styles.container}>
+      <Grid>
+        <GridItem col={3}>
+          <TextInput
+              label="Buscador de productos"
+              placeholder="Buscar productos..."
+              /* value={searchQuery}
+              onChange={handleSearchChange}
+              onKeyDown={handleKeyDown} */
+              endAction={
+                <IconButton 
+                  //onClick={fetchProducts} 
+                  icon={<Search />} 
+                  label="Buscar" 
+                />
+              }
+          />
+        </GridItem>
+        <GridItem col={4} className={styles.selectContainer}>
+          {/* Filtro por categoría (select personalizado) */}
+          <div>
+            <label htmlFor="categoria" className={styles.label}>
+              Filtrar por categoría
+            </label>
+            <select
+              id="categoria"
+              value={filtroCategoria}
+              onChange={handleFiltroCategoria}
+              className={styles.select}
+            >
+              <option value="">Todas las categorías</option>
+              {categorias.map((categoria) => (
+                <option key={categoria.id} value={categoria.attributes.Nombre}>
+                  {categoria.attributes.Nombre}
+                </option>
+              ))}
+            </select>
+          </div>
+        </GridItem>
+      </Grid>
 
-      {/* Filtro por categoría (select personalizado) */}
-      <div className={styles.selectContainer}>
-        <label htmlFor="categoria" className={styles.label}>
-          Filtrar por categoría
-        </label>
-        <select
-          id="categoria"
-          value={filtroCategoria}
-          onChange={handleFiltroCategoria}
-          className={styles.select}
-        >
-          <option value="">Todas las categorías</option>
-          {categorias.map((categoria) => (
-            <option key={categoria.id} value={categoria.attributes.Nombre}>
-              {categoria.attributes.Nombre}
-            </option>
-          ))}
-        </select>
-      </div>
+      
 
       {/* Tabla de productos */}
       <Table>
