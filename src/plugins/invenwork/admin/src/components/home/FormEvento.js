@@ -272,7 +272,7 @@ const styles = {
                 <Typography variant="beta" style={styles.sectionTitle}>
                 Productos
                 </Typography>
-                <div style={styles.searchContainer} ref={searchContainerRef}>
+                <div style={styles.searchContainer}>
                   <TextInput
                       label="Buscador de productos"
                       placeholder="Buscar productos..."

@@ -24,6 +24,9 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::almacen.almacen"
+    },
+    "cantidad_Inicial": {
+      "type": "integer"
     }
   }
 }

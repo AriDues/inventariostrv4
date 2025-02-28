@@ -6,11 +6,13 @@ import styles from '../../styles/ProductList.module.css'; // Importar estilos CS
 const GetProductList = () => {
     const [productos, setProductos] = useState([]);
     const [categorias, setCategorias] = useState([]);
-    const [filtroCategoria, setFiltroCategoria] = useState('');
     const [paginaActual, setPaginaActual] = useState(1);
     const [totalProductos, setTotalProductos] = useState(0);
     const productosPorPagina = 20;
+    const [filtroCategoria, setFiltroCategoria] = useState('');
     const [filtro, setFiltro] = useState(`/api/productos?pagination[page]=${paginaActual}&pagination[pageSize]=${productosPorPagina}&populate=categoria`);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
 
 
     // Obtener productos y categorías
@@ -81,21 +83,51 @@ const GetProductList = () => {
     // Calcular el número total de páginas
     const totalPages = Math.ceil(totalProductos / productosPorPagina);
 
+    //Seccion buscador
+    const handleSearchChange = (e) => {
+      setSearchQuery(e.target.value);
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Enter') {
+          e.preventDefault();
+          fetchProducts();
+      }
+    };
+
+    const fetchProducts = () => {
+  
+      if (searchQuery.trim() !== '') {        
+        fetch(`/api/productos?filters[Nombre][$contains]=${searchQuery}&pagination[page]=${paginaActual}&pagination[pageSize]=${productosPorPagina}&populate=categoria`)
+          .then((res) => res.json())
+          .then(
+              (data) => {
+                  setProductos(data.data);
+                  setTotalProductos(data.meta.pagination.pageCount);
+              }       
+          )
+          .catch((error) => console.error('Error fetching products:', error)); 
+  
+      } else {
+        setSearchResults([]);
+      }
+    };
+
   return (
     <Box className={styles.container}>
       <Grid>
         <GridItem col={3}>
           <TextInput
-              label="Buscador de productos"
-              placeholder="Buscar productos..."
-              /* value={searchQuery}
+              label="Buscador de equipos"
+              placeholder="Buscar equipo..."
+              value={searchQuery}
               onChange={handleSearchChange}
-              onKeyDown={handleKeyDown} */
+              onKeyDown={handleKeyDown}
               endAction={
                 <IconButton 
-                  //onClick={fetchProducts} 
+                  onClick={fetchProducts} 
                   icon={<Search />} 
-                  label="Buscar" 
+                  label="Buscar equipo" 
                 />
               }
           />

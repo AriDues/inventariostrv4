@@ -939,6 +939,7 @@ export interface ApiStockAlmacenStockAlmacen extends Schema.CollectionType {
       'oneToMany',
       'api::almacen.almacen'
     >;
+    cantidad_Inicial: Attribute.Integer;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
