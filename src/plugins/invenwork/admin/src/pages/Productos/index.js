@@ -29,8 +29,8 @@ const Productos = () => {
   return (
     <div>
       <HeaderLayout
-        title="Productos"
-        subtitle="Stock de productos"
+        title="Equiposs"
+        subtitle="Stock de equipos"
         navigationAction={
           <Button onClick={handleGoBack} startIcon={<ArrowLeft />} variant="tertiary">
             Atrás pikachu
