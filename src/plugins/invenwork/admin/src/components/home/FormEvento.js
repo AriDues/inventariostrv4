@@ -273,36 +273,36 @@ const styles = {
                 Productos
                 </Typography>
                 <div style={styles.searchContainer} ref={searchContainerRef}>
-                <TextInput
-                    label="Buscador de productos"
-                    placeholder="Buscar productos..."
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    onKeyDown={handleKeyDown}
-                    endAction={
-                    <IconButton onClick={fetchProducts} icon={<Search />} label="Buscar" />
-                    }
-                />
-                {searchResults.length > 0 && (
-                    <Box style={styles.floatingPreview}>
-                    {searchResults.map((product) => (
-                        <div 
-                            key={product.id} 
-                            onClick={() => addProduct(product)} 
-                            style={{
-                                padding: "10px",
-                                margin: "5px",
-                                backgroundColor: hoveredItem === product.id ? '#f0f0f0' : 'white', // Cambia el color si está en hover
-                                transition: 'background-color 0.3s ease',
-                            }}
-                            onMouseEnter={() => setHoveredItem(product.id)} // Actualiza hoveredItem con el índice
-                            onMouseLeave={() => setHoveredItem(null)} // Restablece hoveredItem a null
-                        >
-                        {"ID " + product.id + " " + product.attributes.Nombre}
-                        </div>
-                    ))}
-                    </Box>
-                )}
+                  <TextInput
+                      label="Buscador de productos"
+                      placeholder="Buscar productos..."
+                      value={searchQuery}
+                      onChange={handleSearchChange}
+                      onKeyDown={handleKeyDown}
+                      endAction={
+                      <IconButton onClick={fetchProducts} icon={<Search />} label="Buscar" />
+                      }
+                  />
+                  {searchResults.length > 0 && (
+                      <Box style={styles.floatingPreview}>
+                      {searchResults.map((product) => (
+                          <div 
+                              key={product.id} 
+                              onClick={() => addProduct(product)} 
+                              style={{
+                                  padding: "10px",
+                                  margin: "5px",
+                                  backgroundColor: hoveredItem === product.id ? '#f0f0f0' : 'white', // Cambia el color si está en hover
+                                  transition: 'background-color 0.3s ease',
+                              }}
+                              onMouseEnter={() => setHoveredItem(product.id)} // Actualiza hoveredItem con el índice
+                              onMouseLeave={() => setHoveredItem(null)} // Restablece hoveredItem a null
+                          >
+                          {"ID " + product.id + " " + product.attributes.Nombre}
+                          </div>
+                      ))}
+                      </Box>
+                  )}
                 </div>
 
                 {/* Listado de productos */}

@@ -9,9 +9,15 @@
   
   .label {
     display: block;
-    margin-bottom: 8px;
-    font-weight: bold;
-    color: #333;
+    font-size: 0.75rem;
+    line-height: 1.33;
+    font-weight: 600;
+    color: rgb(50, 50, 77);
+    padding-bottom: 4px;
+  }
+
+  .selectContainer{
+    margin-left: 20px;
   }
   
   .select {
