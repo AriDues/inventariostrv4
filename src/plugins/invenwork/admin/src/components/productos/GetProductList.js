@@ -9,7 +9,7 @@ const GetProductList = () => {
     const [paginaActual, setPaginaActual] = useState(1);
     const [totalProductos, setTotalProductos] = useState(0);
     const productosPorPagina = 20;
-    const [filtroCategoria, setFiltroCategoria] = useState('');
+    const [filtroCategoria, setFiltroCategoria] = useState(true);
     const [filtro, setFiltro] = useState(`/api/productos?pagination[page]=${paginaActual}&pagination[pageSize]=${productosPorPagina}&populate=categoria`);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -18,7 +18,7 @@ const GetProductList = () => {
     // Obtener productos y categorías
     useEffect(() => {
         // Obtener el stock de cada producto
-        const fetchProductos = async () => {
+        /* const fetchProductos = async () => {
             //productos?pagination[page]=1&pagination[pageSize]=20&populate=categoria&filters[categoria][Nombre][$eq]=video
             const response = await fetch(filtro);
             const dataProductos = await response.json();
@@ -55,22 +55,23 @@ const GetProductList = () => {
 
             setProductos(productosConStock);
             setTotalProductos(dataProductos.meta.pagination.pageCount);
-        };
-
-
+        }; */
+        
         const fetchCategorias = async () => {
         const response = await fetch('/api/categorias');
         const dataCategorias = await response.json();
         setCategorias(dataCategorias.data);
         };
 
-        fetchProductos();
+        //fetchProductos();
+        fetchProducts();
         fetchCategorias();
     }, [paginaActual, filtro, ]);
 
     // Manejar cambio de categoría
     const handleFiltroCategoria = (e) => {
         //setFiltroCategoria(e.target.value);
+        setFiltroCategoria(true);
         setPaginaActual(1); // Reiniciar a la primera página al cambiar el filtro
         setFiltro(`/api/productos?pagination[page]=${paginaActual}&pagination[pageSize]=${productosPorPagina}&populate=categoria&filters[categoria][Nombre][$eq]=${e.target.value}`)
     };
@@ -89,13 +90,57 @@ const GetProductList = () => {
     };
 
     const handleKeyDown = (e) => {
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter') {          
           e.preventDefault();
+          console.log("Enter");
+          setFiltroCategoria(false); 
           fetchProducts();
       }
     };
 
-    const fetchProducts = () => {
+    const fetchProducts = async () => {
+      const filtroProduct = `/api/productos?filters[Nombre][$contains]=${searchQuery}&pagination[page]=${paginaActual}&pagination[pageSize]=${productosPorPagina}&populate=categoria`
+      const response = await fetch(filtroCategoria ? filtro : filtroProduct);
+      const dataProductos = await response.json();
+
+      // Obtener el stock de cada producto
+      const productosConStock = await Promise.all(
+          dataProductos.data.map(async (producto) => {
+          const responseStock = await fetch(
+              `/api/stock-almacens?filters[productos][id][$eq]=${producto.id}`
+          );
+          const dataStock = await responseStock.json();
+          console.log('cantidad_faltante', JSON.stringify(dataStock?.data[0]?.attributes?.cantidad, null, 2));
+
+      
+          // Verificar si hay stock para el producto
+          if (dataStock.data.length > 0) {
+              // Sumar el stock de todos los almacenes para este producto
+              const stockInicialPorProducto = dataStock?.data[0]?.attributes?.cantidad_Inicial;
+              const stockPorProducto = dataStock?.data[0]?.attributes?.cantidad;
+      
+              // Agregar el stock total al objeto del producto
+              return {
+              ...producto,
+              cantidad_Inicial: stockInicialPorProducto,
+              cantidad: stockPorProducto,
+              };
+          } else {
+              // Si no hay stock, devolver 0
+              return {
+              ...producto,
+              cantidad_Inicial: 0,
+              cantidad: 0,
+              };
+          }
+          })
+      );
+
+      setProductos(productosConStock);
+      setTotalProductos(dataProductos.meta.pagination.pageCount);
+  };
+
+    /* const fetchProducts = () => {
   
       if (searchQuery.trim() !== '') {        
         fetch(`/api/productos?filters[Nombre][$contains]=${searchQuery}&pagination[page]=${paginaActual}&pagination[pageSize]=${productosPorPagina}&populate=categoria`)
@@ -111,7 +156,7 @@ const GetProductList = () => {
       } else {
         setSearchResults([]);
       }
-    };
+    }; */
 
   return (
     <Box className={styles.container}>
@@ -125,7 +170,10 @@ const GetProductList = () => {
               onKeyDown={handleKeyDown}
               endAction={
                 <IconButton 
-                  onClick={fetchProducts} 
+                  onClick={()=>{
+                    setFiltroCategoria(false); 
+                    fetchProducts();
+                  }} 
                   icon={<Search />} 
                   label="Buscar equipo" 
                 />
@@ -140,7 +188,6 @@ const GetProductList = () => {
             </label>
             <select
               id="categoria"
-              value={filtroCategoria}
               onChange={handleFiltroCategoria}
               className={styles.select}
             >
@@ -164,6 +211,7 @@ const GetProductList = () => {
             <Th>SKU</Th>
             <Th>Nombre</Th>
             <Th>Descripción</Th>
+            <Th>Stock Inicial</Th>            
             <Th>Stock</Th>            
             {/* <Th>Precio</Th> */}
             <Th>Categoría</Th>
@@ -175,6 +223,7 @@ const GetProductList = () => {
                 <Td>{producto.attributes.Sku}</Td>
                 <Td>{producto.attributes.Nombre}</Td>
                 <Td>{producto.attributes.Descripcion}</Td>
+                <Td>{producto.cantidad_Inicial}</Td>              
                 <Td>{producto.cantidad}</Td>              
                 {/* <Td>${producto.attributes.Precio}</Td> */}
                 <Td>{producto.attributes.categoria.data?.attributes.Nombre}</Td>
