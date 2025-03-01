@@ -29,7 +29,7 @@ const Productos = () => {
   return (
     <div>
       <HeaderLayout
-        title="Equiposs"
+        title="Equipos"
         subtitle="Stock de equipos"
         navigationAction={
           <Button onClick={handleGoBack} startIcon={<ArrowLeft />} variant="tertiary">
@@ -46,7 +46,9 @@ const Productos = () => {
       />
       <ContentLayout>
         {isFormVisible && (
-          <FormProduct/>
+          <FormProduct
+            setIsFormVisible={setIsFormVisible}
+          />
         )}
         {!isFormVisible && (
           <GetProductList/>
