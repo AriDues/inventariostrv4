@@ -95,11 +95,11 @@ const FormEvento = ({ setIsFormVisible, setIsCardVisible, setDatosForm }) => {
             })
         });
 
-        const eventoData = await eventoResponse.json();
-    
         if (!eventoResponse.ok) {
-            throw new Error('Error al crear el evento');
+          throw new Error('Error al crear el evento');
         }
+
+        const eventoData = await eventoResponse.json();
     
         const eventId = eventoData.data.id; // ID del evento creado
 
@@ -119,7 +119,7 @@ const FormEvento = ({ setIsFormVisible, setIsCardVisible, setDatosForm }) => {
                     almacen: [1],
                     evento: [eventId] // Relación con el evento
                 }
-            })
+              })
             });
         });
     
@@ -307,29 +307,29 @@ const styles = {
 
                 {/* Listado de productos */}
                 <Box style={styles.productListContainer}>
-                <Box style={styles.productList}>
-                    {products.map((product) => (
-                    <Box key={product.id} style={styles.productItem}>
-                        <Typography>{product.attributes.Nombre}</Typography>
-                        <TextInput
-                        label="Cantidad"
-                        type="number"
-                        value={product.quantity}
-                        onChange={(e) => {
-                            const updatedProducts = products.map((p) =>
-                            p.id === product.id ? { ...p, quantity: e.target.value } : p
-                            );
-                            setProducts(updatedProducts);
-                        }}
-                        min={1}
-                        style={styles.quantityInput}
-                        />
-                        <Button variant="danger" onClick={() => removeProduct(product.id)}>
-                        Eliminar
-                        </Button>
-                    </Box>
-                    ))}
-                </Box>
+                  <Box style={styles.productList}>
+                      {products.map((product) => (
+                      <Box key={product.id} style={styles.productItem}>
+                          <Typography>{product.attributes.Nombre}</Typography>
+                          <TextInput
+                          label="Cantidad"
+                          type="number"
+                          value={product.quantity}
+                          onChange={(e) => {
+                              const updatedProducts = products.map((p) =>
+                              p.id === product.id ? { ...p, quantity: e.target.value } : p
+                              );
+                              setProducts(updatedProducts);
+                          }}
+                          min={1}
+                          style={styles.quantityInput}
+                          />
+                          <Button variant="danger" onClick={() => removeProduct(product.id)}>
+                          Eliminar
+                          </Button>
+                      </Box>
+                      ))}
+                  </Box>
                 </Box>
             </GridItem>
 
