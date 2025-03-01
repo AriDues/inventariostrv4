@@ -181,7 +181,7 @@ const FormProduct = ({setIsFormVisible}) => {
                     cantidad: formData.cantidad,
                     productos: productoId,
                     almacenes: 1,
-                    cantidad_Inicial: formData.cantidad_inicial,
+                    cantidad_Inicial: formData.cantidad,
                 }
 
                 // 1️⃣ Enviar solicitud
@@ -280,7 +280,7 @@ const FormProduct = ({setIsFormVisible}) => {
                         {/* Botón Enviar */}
                         <GridItem col={3}>
                             <Button type="submit" variant="default">
-                                Crear Producto
+                                Crear Equipo
                             </Button>
                         </GridItem>
                     </Grid>
