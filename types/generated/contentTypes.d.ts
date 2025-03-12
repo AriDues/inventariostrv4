@@ -763,6 +763,7 @@ export interface ApiEventoEvento extends Schema.CollectionType {
     >;
     fechaFin: Attribute.Date;
     HoraInicio: Attribute.Time;
+    HoraFin: Attribute.Time;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

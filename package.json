@@ -10,14 +10,15 @@
     "strapi": "strapi"
   },
   "dependencies": {
-    "@react-pdf/renderer": "^4.2.2",
     "@strapi/plugin-i18n": "4.14.0",
     "@strapi/plugin-users-permissions": "4.14.0",
-    "@strapi/provider-upload-cloudinary": "^5.10.0",
+    "@strapi/provider-upload-cloudinary": "5.10.0",
     "@strapi/strapi": "4.14.0",
-    "jspdf": "^2.5.2",
+    "html2canvas": "1.4.1",
+    "jspdf": "2.5.2",
     "pg": "8.8.0",
-    "react-toastify": "^11.0.5"
+    "prop-types": "^15.8.1",
+    "react-toastify": "11.0.5"
   },
   "author": {
     "name": "A Strapi developer"

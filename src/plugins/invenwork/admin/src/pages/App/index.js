@@ -15,11 +15,12 @@ const App = () => {
   return (
     <div>
       <Switch>
-        {/* Ruta principal */}
-        <Route path={`/plugins/${pluginId}`} component={HomePage} exact />
 
         {/* Nueva ruta */}
         <Route path={`/plugins/${pluginId}/productos`} component={Productos} />
+        
+        {/* Ruta principal */}
+        <Route path={`/plugins/${pluginId}`} component={HomePage} />
 
         {/* Ruta de error (si no coincide ninguna ruta) */}
         <Route component={AnErrorOccurred} />

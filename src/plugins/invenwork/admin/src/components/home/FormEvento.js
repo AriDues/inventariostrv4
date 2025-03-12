@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Button, DatePicker, TextInput, Typography, Grid, GridItem, Box, IconButton } from '@strapi/design-system';
+import { Button, DatePicker, TimePicker, TextInput, Typography, Grid, GridItem, Box, IconButton } from '@strapi/design-system';
 import { Search } from '@strapi/icons';
 
 const FormEvento = ({ setIsFormVisible, setIsCardVisible, setDatosForm }) => {
@@ -7,6 +7,7 @@ const FormEvento = ({ setIsFormVisible, setIsCardVisible, setDatosForm }) => {
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [eventTime, setEventTime] = useState('');
+  const [eventTimeFinish, setEventTimeFinish] = useState('');
   const [location, setLocation] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -14,6 +15,7 @@ const FormEvento = ({ setIsFormVisible, setIsCardVisible, setDatosForm }) => {
   const [hoveredItem, setHoveredItem] = useState(null);
   const searchContainerRef = useRef(null);
   const [horaFormateada, setHoraFormateada] = useState("09:10");
+  const [horaFormateadaFinal, setHoraFormateadaFinal] = useState("09:10");
 /*   let HoraInicioFormat = new Date(); */
 
   useEffect(() => {
@@ -54,8 +56,9 @@ const FormEvento = ({ setIsFormVisible, setIsCardVisible, setDatosForm }) => {
   
         // Actualizar el estado con la hora formateada
         setHoraFormateada(formatearHora(eventTime));
+        setHoraFormateadaFinal(formatearHora(eventTimeFinish));
 
-  }, [eventTime, startDate]); 
+  }, [eventTime, eventTimeFinish, startDate]); 
 
   // Obtener la fecha actual del sistema
   const fechaActual = new Date();
@@ -81,6 +84,7 @@ const FormEvento = ({ setIsFormVisible, setIsCardVisible, setDatosForm }) => {
             estatus : estatusEvento,
             fechaFin : endDate,
             HoraInicio : horaFormateada,
+            HoraFin : horaFormateadaFinal,
         }
     
         try {
@@ -207,9 +211,6 @@ const styles = {
       gap: '16px',
       padding: '20px',
     },
-    sectionTitle: {
-      marginBottom: '16px',
-    },
     productListContainer: {
       maxHeight: '200px',
       overflowY: 'auto',
@@ -237,6 +238,11 @@ const styles = {
     searchContainer: {
       position: 'relative',
       width: '100%',
+      paddingTop: '1.5rem',
+    },
+    inputsContainer: {
+      width: '100%',
+      paddingTop: '1.5rem',
     },
     floatingPreview: {
       position: 'absolute',
@@ -257,21 +263,44 @@ const styles = {
         <Grid gap={4} columns={12}>
             {/* Datos del evento */}
             <GridItem col={6}>
-                <Typography variant="beta" style={styles.sectionTitle}>
-                Datos del evento
-                </Typography>
-                <TextInput label="Nombre del evento" value={eventName} onChange={(e) => setEventName(e.target.value)} required />
-                <DatePicker label="Fecha de inicio" selectedDate={startDate} onChange={setStartDate} required />
-                <DatePicker label="Fecha de fin" selectedDate={endDate} onChange={setEndDate} required />
-                <TextInput label="Hora del evento" value={eventTime} onChange={(e) => setEventTime(e.target.value)} type="time" required />
-                <TextInput label="Locación" value={location} onChange={(e) => setLocation(e.target.value)} required />
+                <Typography variant="beta">Datos del evento</Typography>
+                <div style={styles.inputsContainer}>
+                  <TextInput
+                    label="Nombre del evento"
+                    value={eventName}
+                    onChange={(e) => setEventName(e.target.value)}
+                  />
+                  <DatePicker
+                    label="Fecha de inicial"
+                    selectedDate={startDate}
+                    onChange={setStartDate}
+                  />
+                  <TimePicker
+                    label="Hora inicial"
+                    value={eventTime}
+                    onChange={setEventTime}
+                  />
+                  <DatePicker
+                    label="Fecha de final"
+                    selectedDate={endDate}
+                    onChange={setEndDate}
+                  />
+                  <TimePicker
+                    label="Hora final"
+                    value={eventTimeFinish}
+                    onChange={setEventTimeFinish}
+                  />
+                  <TextInput
+                    label="Locación"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                  />
+                </div>
             </GridItem>
 
             {/* Buscador de productos */}
             <GridItem col={6}>
-                <Typography variant="beta" style={styles.sectionTitle}>
-                Productos
-                </Typography>
+                <Typography variant="beta">Productos</Typography>
                 <div style={styles.searchContainer}>
                   <TextInput
                       label="Buscador de productos"

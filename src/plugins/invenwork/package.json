@@ -4,6 +4,7 @@
   "description": "This is the description of the plugin.",
   "strapi": {
     "name": "invenwork",
+    "type": "module",
     "description": "Description of Invenwork plugin",
     "kind": "plugin",
     "displayName": "Invenwork"

@@ -13,6 +13,11 @@ const FormFinishEvent = ({ datosForm, datosFormFinishEvent, onClose, setIsCardVi
   );
   //const [eventProducts, setEventProducts] = useState([]);
 
+  useEffect(() => {
+    console.log("updatedProducts ****" + JSON.stringify(datosForm, null, 2));
+  }, [])
+  
+
   // Obtener los productos asociados al evento al cargar el componente
   useEffect(() => {
 
