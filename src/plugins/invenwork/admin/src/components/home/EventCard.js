@@ -144,7 +144,7 @@ const EventCard = ({ datosForm, setIsCardVisible, eventStatus}) => {
 
     useEffect(() => {
 
-      console.log(" datosForm  " + JSON.stringify(datosForm, null, 2));
+      //console.log(" datosForm  " + JSON.stringify(datosForm, null, 2));
 
       const fetchEventProducts = async () => {
         try {

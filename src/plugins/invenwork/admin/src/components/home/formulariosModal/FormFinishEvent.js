@@ -11,12 +11,6 @@ const FormFinishEvent = ({ datosForm, datosFormFinishEvent, onClose, setIsCardVi
       idProductosEnEvento: null, // Inicializa el id de productos-en-eventos como null
     }))
   );
-  //const [eventProducts, setEventProducts] = useState([]);
-
-  useEffect(() => {
-    console.log("updatedProducts ****" + JSON.stringify(datosForm, null, 2));
-  }, [])
-  
 
   // Obtener los productos asociados al evento al cargar el componente
   useEffect(() => {
@@ -75,16 +69,11 @@ const FormFinishEvent = ({ datosForm, datosFormFinishEvent, onClose, setIsCardVi
         estatus = cantidad_retornada === product.quantity ? "Devuelto" : "Faltante";
 
       }else if(eventStatus === "Finalizado Parcialmente"){
-        cantidad_faltante = Math.max(product.quantity - (datosFormFinishEvent[index].cantidad_retornada + product.cantidad_retornada), 0);
-        cantidad_retornada = (datosFormFinishEvent[index].cantidad_retornada + product.cantidad_retornada);
+        cantidad_faltante = Math.max(product.quantity - (datosFormFinishEvent.productos[index]?.cantidad_retornada + product.cantidad_retornada), 0);
+        cantidad_retornada = (datosFormFinishEvent.productos[index]?.cantidad_retornada + product.cantidad_retornada);
         estatus = cantidad_retornada === product.quantity ? "Devuelto" : "Faltante";
       }
 
-/*       const cantidad_faltante = product.cantidad_retornada !== product.quantity ? Math.max(product.quantity - product.cantidad_retornada, 0) : 0 ;
-      const faltante = product.cantidad_faltante === undefined || product.cantidad_faltante === null ? 0 : product.cantidad_faltante;
-      const sumCantidaRetornada = eventStatus === "Finalizado Parcialmente" ? faltante + product.cantidad_retornada : ;
-      const estatus = sumCantidaRetornada === product.quantity ? "Devuelto" : "Faltante"; //product.cantidad_retornada === product.quantity ? "Devuelto" : "Faltante";
- */
       return {
         id: product.idProductosEnEvento, // Usar el id de productos-en-eventos
         cantidad_retornada,//product.cantidad_retornada,
@@ -104,9 +93,6 @@ const FormFinishEvent = ({ datosForm, datosFormFinishEvent, onClose, setIsCardVi
     );
 
     try {
-
-        //console.log(JSON.stringify(updatedProducts, null, 2));
-
 
         // Actualizar cada producto individualmente
         const updatePromises = updatedProducts.map((product) => {
@@ -210,12 +196,12 @@ const FormFinishEvent = ({ datosForm, datosFormFinishEvent, onClose, setIsCardVi
                 <TextInput
                   label="Retorno"
                   type="number"
-                  value={product.cantidad_retornada}
+                  value={datosFormFinishEvent[index]?.productos.cantidad_faltante}
                   onChange={(e) =>
                     handleQuantityChange(product.id, parseInt(e.target.value, 10))
                   }            
                   min={1}
-                  max={eventStatus === "Finalizado Parcialmente" ? datosFormFinishEvent[index].cantidad_faltante : product.quantity }
+                  max={eventStatus === "Finalizado Parcialmente" ? datosFormFinishEvent[index]?.productos.cantidad_faltante : product.quantity }
                   className={styles.input}
                 />
               </td>
