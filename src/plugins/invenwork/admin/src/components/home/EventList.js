@@ -203,7 +203,7 @@ const EventList = ({setIsCardVisible, setDatosForm, setEventStatus}) => {
               {calculateDuration(event.attributes.fechaInicio, event.attributes.fechaFin)} días
             </p>
             <p style={styles.cardContent}>
-              <strong>Productos:</strong> {countProductsInEvent(event.id)}
+              <strong>Equipos:</strong> {countProductsInEvent(event.id)}
             </p>
             <div style={styles.buttonContainer}>
                 <button 

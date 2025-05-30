@@ -271,22 +271,22 @@ const styles = {
                     onChange={(e) => setEventName(e.target.value)}
                   />
                   <DatePicker
-                    label="Fecha de inicial"
+                    label="Fecha de inicio"
                     selectedDate={startDate}
                     onChange={setStartDate}
                   />
                   <TimePicker
-                    label="Hora inicial"
+                    label="Hora de inicio"
                     value={eventTime}
                     onChange={setEventTime}
                   />
                   <DatePicker
-                    label="Fecha de final"
+                    label="Fecha de fin"
                     selectedDate={endDate}
                     onChange={setEndDate}
                   />
                   <TimePicker
-                    label="Hora final"
+                    label="Hora de fin"
                     value={eventTimeFinish}
                     onChange={setEventTimeFinish}
                   />
@@ -300,11 +300,11 @@ const styles = {
 
             {/* Buscador de productos */}
             <GridItem col={6}>
-                <Typography variant="beta">Productos</Typography>
+                <Typography variant="beta">Equipos</Typography>
                 <div style={styles.searchContainer}>
                   <TextInput
-                      label="Buscador de productos"
-                      placeholder="Buscar productos..."
+                      label="Buscador de equipos"
+                      placeholder="Buscar equipos..."
                       value={searchQuery}
                       onChange={handleSearchChange}
                       onKeyDown={handleKeyDown}
