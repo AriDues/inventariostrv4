@@ -316,13 +316,13 @@ const EventCard = ({ datosForm, setIsCardVisible, eventStatus }) => {
                 <strong style={styles.cardContentBold}>Fecha de inicio:</strong> {datosForm.evento.attributes.fechaInicio}
               </p>
               <p style={styles.cardContent}>
-                <strong style={styles.cardContentBold}>Hora de inicio:</strong> {datosForm.evento.attributes.HoraInicio}
+                <strong style={styles.cardContentBold}>Hora de inicio: </strong> {datosForm.evento.attributes.HoraInicio}
               </p>
               <p style={styles.cardContent}>
                 <strong style={styles.cardContentBold}>Fecha de fin:</strong> {datosForm.evento.attributes.fechaFin}
               </p>
               <p style={styles.cardContent}>
-                <strong style={styles.cardContentBold}>Hora de fin:</strong> {datosForm.evento.attributes.HoraFin}
+                <strong style={styles.cardContentBold}>Hora de fin: </strong> {datosForm.evento.attributes.HoraFin}
               </p> 
             </div>
 
@@ -334,7 +334,7 @@ const EventCard = ({ datosForm, setIsCardVisible, eventStatus }) => {
                       Orden retorno parcial
                     </button>
                     <button onClick={toggleFirstModal} style={styles.finishEventButtonLeft}>
-                      Finalizar evento
+                      Finalizar Evento
                     </button>
                   </>
                 )} 
@@ -351,13 +351,13 @@ const EventCard = ({ datosForm, setIsCardVisible, eventStatus }) => {
                       Orden de salida
                     </button>
                     <button onClick={toggleFirstModal} style={styles.finishEventButtonLeft}>
-                      Finalizar evento
+                      Finalizar Evento
                     </button>
                   </>
                 )}                    
               </div>
               <button onClick={() => setIsCardVisible(false)} style={styles.closeButtonRight}>
-                Cerrar
+                CERRAR
               </button>
             </div>
           </div>
