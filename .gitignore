@@ -112,3 +112,7 @@ exports
 dist
 build
 .strapi-updater.json
+src/plugins/invenwork/admin/src/components/home/EventCard_BACKUP_404.js
+src/plugins/invenwork/admin/src/components/home/EventCard_BASE_404.js
+src/plugins/invenwork/admin/src/components/home/EventCard_LOCAL_404.js
+src/plugins/invenwork/admin/src/components/home/EventCard_REMOTE_404.js

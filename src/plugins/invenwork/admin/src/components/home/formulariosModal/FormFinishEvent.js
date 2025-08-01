@@ -210,7 +210,7 @@ const FormFinishEvent = ({ datosForm, datosFormFinishEvent, onClose, setIsCardVi
         </tbody>
       </table>
       <button className={styles.button} onClick={handleSubmit}>
-        Aceptar
+        Aceptar 
       </button>
     </div>
   );
