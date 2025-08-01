@@ -26,7 +26,6 @@ const GetProductList = () => {
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Fetch inicial cuando cambian paginaActual, filtros o búsqueda
   useEffect(() => {
     fetchProducts();
     fetchCategorias();
@@ -63,7 +62,6 @@ const GetProductList = () => {
   };
 
   const fetchProducts = async () => {
-    // Construir URL dinámica según filtros
     let url = `/api/productos?pagination[page]=${paginaActual}&pagination[pageSize]=${productosPorPagina}&populate=categoria`;
 
     if (usarFiltroCategoria && categoriaSeleccionada) {
@@ -107,80 +105,6 @@ const GetProductList = () => {
     setProductos(productosConStock);
     setTotalPages(dataProductos.meta.pagination.pageCount);
   };
-
-    //Seccion buscador
-    const handleSearchChange = (e) => {
-      setSearchQuery(e.target.value);
-    };
-
-    const handleKeyDown = (e) => {
-      if (e.key === 'Enter') {          
-          e.preventDefault();
-          console.log("Enter");
-          setFiltroCategoria(false); 
-          fetchProducts();
-      }
-    };
-
-    const fetchProducts = async () => {
-      const filtroProduct = `/api/productos?filters[Nombre][$contains]=${searchQuery}&pagination[page]=${paginaActual}&pagination[pageSize]=${productosPorPagina}&populate=categoria`
-      const response = await fetch(filtroCategoria ? filtro : filtroProduct);
-      const dataProductos = await response.json();
-
-      // Obtener el stock de cada producto
-      const productosConStock = await Promise.all(
-          dataProductos.data.map(async (producto) => {
-          const responseStock = await fetch(
-              `/api/stock-almacens?filters[productos][id][$eq]=${producto.id}`
-          );
-          const dataStock = await responseStock.json();
-          console.log('cantidad_faltante', JSON.stringify(dataStock?.data[0]?.attributes?.cantidad, null, 2));
-
-      
-          // Verificar si hay stock para el producto
-          if (dataStock.data.length > 0) {
-              // Sumar el stock de todos los almacenes para este producto
-              const stockInicialPorProducto = dataStock?.data[0]?.attributes?.cantidad_Inicial;
-              const stockPorProducto = dataStock?.data[0]?.attributes?.cantidad;
-      
-              // Agregar el stock total al objeto del producto
-              return {
-              ...producto,
-              cantidad_Inicial: stockInicialPorProducto,
-              cantidad: stockPorProducto,
-              };
-          } else {
-              // Si no hay stock, devolver 0
-              return {
-              ...producto,
-              cantidad_Inicial: 0,
-              cantidad: 0,
-              };
-          }
-          })
-      );
-
-      setProductos(productosConStock);
-      setTotalProductos(dataProductos.meta.pagination.pageCount);
-  };
-
-    /* const fetchProducts = () => {
-  
-      if (searchQuery.trim() !== '') {        
-        fetch(`/api/productos?filters[Nombre][$contains]=${searchQuery}&pagination[page]=${paginaActual}&pagination[pageSize]=${productosPorPagina}&populate=categoria`)
-          .then((res) => res.json())
-          .then(
-              (data) => {
-                  setProductos(data.data);
-                  setTotalProductos(data.meta.pagination.pageCount);
-              }       
-          )
-          .catch((error) => console.error('Error fetching products:', error)); 
-  
-      } else {
-        setSearchResults([]);
-      }
-    }; */
 
   return (
     <Box className={styles.container}>
@@ -226,7 +150,6 @@ const GetProductList = () => {
         </GridItem>
       </Grid>
 
-      {/* Tabla de productos */}
       <Table>
         <Thead>
           <Tr>
@@ -254,7 +177,6 @@ const GetProductList = () => {
         </Tbody>
       </Table>
 
-      {/* Paginación */}
       <div
         style={{
           display: 'flex',
