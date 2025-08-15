@@ -1,89 +1,93 @@
-/* components/PDFTemplate/PDFTemplate.css */
 .pdf-template {
     background: white;
     padding: 20px;
     width: 794px;
     min-height: 1123px;
     position: relative;
-    padding-bottom: 120px; /* Espacio para el footer */
-  }
-  
-  .header {
+    /* padding-bottom removido porque footer ya no es absolute */
+}
+
+.header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid #000;
     padding-bottom: 15px;
     margin-bottom: 20px;
-  }
-  
-  .header h2 {
+}
+
+.header h2 {
     margin: 0;
     font-size: 22px;
-  }
-  
-  .current-date {
+}
+
+.current-date {
     margin: 0;
     font-size: 14px;
-  }
-  
-  .title {
+}
+
+.title {
     font-size: 24px;
     margin-bottom: 15px;
     text-align: center;
-  }
-  
-  .details-grid {
+}
+
+.details-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     margin-bottom: 20px;
-  }
-  
-  .subtitle {
+}
+
+.subtitle {
     font-size: 18px;
     margin: 25px 0 15px 0;
     border-bottom: 1px solid #ddd;
     padding-bottom: 5px;
-  }
-  
-  .table {
+}
+
+.table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 30px;
-  }
-  
-  .table th, .table td {
+}
+
+.table th, .table td {
     border: 1px solid #000;
     padding: 10px;
     text-align: left;
-  }
-  
-  .table th {
+}
+
+.table th {
     background-color: #f0f0f0;
     font-weight: 600;
-  }
-  
-  .footer {
-    position: absolute;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-  }
-  
-  .signatures {
+}
+
+.footer {
+    position: relative; /* cambiado de absolute a relative */
+    margin-top: 20px;
+}
+
+.signatures {
     display: flex;
     justify-content: space-between;
     margin-top: 50px;
     margin-bottom: 30px;
-  }
-  
-  .signature-box {
+}
+
+.signature-box {
     width: 45%;
-  }
-  
-  .generated-info {
+}
+
+.generated-info {
     font-size: 12px;
     color: #666;
     margin-top: 20px;
-  }
+}
+
+.page-number {
+    text-align: right;
+    font-size: 12px;
+    color: #666;
+    margin-top: 10px;
+}
