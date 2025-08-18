@@ -28,11 +28,35 @@ const styles = {
     height: 'fit-content',
   },
   rightCard: {
+    position: "relative",
     flex: 0.6,
     border: "1px solid #e0e0e0",
     borderRadius: "4px",
     padding: "20px",
     backgroundColor: "#f9f9f9",
+  },
+  addEquiposButton: {
+  position: 'absolute',
+  top: '15px',
+  right: '15px',
+  backgroundColor: "#4945ff",
+  color: "white",
+  padding: "8px 16px",
+  border: "none",
+  borderRadius: "4px",
+  cursor: "pointer",
+  },
+  overlaySearch: {
+    position: 'absolute',
+    top: '0', // debajo del h3 y botón
+    left: '0',
+    right: '0',
+    background: '#fff',
+    border: "1px solid #e0e0e0",
+    borderRadius: "6px",
+    padding: "20px",
+    zIndex: 20,
+    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
   },
   cardTitle: {
     fontSize: "20px",
@@ -50,7 +74,7 @@ const styles = {
   productTitle: {
     fontSize: "18px",
     fontWeight: "bold",
-    marginBottom: "12px",
+    marginBottom: "30px",
   },
   productTable: {
     width: "100%",
@@ -464,61 +488,28 @@ const addProduct = (product) => {
 
           {/* Columna Derecha - Productos */}
           <div style={styles.rightCard}>
-            <h3 style={styles.productTitle}>Equipos Asignados</h3>
-            <table style={styles.productTable}>
-              <thead>
-                <tr>
-                  <th style={styles.tableHeader}>SKU</th>
-                  <th style={styles.tableHeader}>Nombre</th>
-                  <th style={styles.tableHeader}>Cantidad solicitada</th>
-                  {(eventStatus === "Finalizado" || eventStatus === "Finalizado Parcialmente") && (
-                    <th style={styles.tableHeader}>Cantidad Devuelta</th>
-                  )}
-                  {eventStatus === "Finalizado Parcialmente" && (
-                    <th style={styles.tableHeader}>Cantidad Faltante</th>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {productosFormFinishEvent.map((producto) => (
-                  <tr key={producto.id} style={styles.tableRow}>
-                    <td style={styles.tableCell}>{producto.attributes.Sku}</td>
-                    <td style={styles.tableCell}>{producto.attributes.Nombre}</td>
-                    <td style={styles.tableCell}>{producto.quantity}</td>
-                    {(eventStatus === "Finalizado" || eventStatus === "Finalizado Parcialmente") && (
-                      <td style={styles.tableCell}>{producto.cantidad_retornada ?? 0}</td>
-                    )}
-                    {eventStatus === "Finalizado Parcialmente" && (
-                      <td style={styles.tableCell}>{producto.cantidad_faltante ?? 0}</td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
+            {/* Botón en esquina superior derecha */}
             {!moreProducts && (
-              <button id="asignarMasProductos" onClick={() => setMoreProducts(true)} style={styles.printButtonLeft}>
+              <button 
+                id="asignarMasProductos" 
+                onClick={() => setMoreProducts(true)} 
+                style={styles.addEquiposButton}
+              >
                 Asignar más equipos
-              </button>  
+              </button>
             )}
 
+            {/* Cuando moreProducts es true, el buscador aparece flotante */}
             {moreProducts && (
-              <div style={styles.cardContentContainerSearchPProduct}>
+              <div style={styles.overlaySearch}>
                 <button 
                   onClick={() => setMoreProducts(false)}
                   style={styles.closeIconButton}
                   aria-label="Cerrar"
                 >
-                  <svg
-                    style={{ width: '24px', height: '24px', color: '#666' }}
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path d="M18 6L6 18M6 6l12 12" />
-                  </svg>
+                  ✕
                 </button>
-                
+
                 <div style={styles.searchInputContainer}>
                   <div style={styles.searchInputWrapper}>
                     <TextInput
@@ -531,7 +522,7 @@ const addProduct = (product) => {
                       endAction={<IconButton onClick={fetchProducts} icon={<Search />} label="Buscar" />}
                     />
                   </div>
-                  
+
                   {searchResults.length > 0 && (
                     <div style={styles.floatingPreview}>
                       {searchResults.map((product) => (
@@ -588,6 +579,39 @@ const addProduct = (product) => {
                 </div>
               </div>
             )}
+
+            <h3 style={styles.productTitle}>Equipos Asignados</h3>
+            <table style={styles.productTable}>
+              <thead>
+                <tr>
+                  <th style={styles.tableHeader}>SKU</th>
+                  <th style={styles.tableHeader}>Nombre</th>
+                  <th style={styles.tableHeader}>Cantidad solicitada</th>
+                  {(eventStatus === "Finalizado" || eventStatus === "Finalizado Parcialmente") && (
+                    <th style={styles.tableHeader}>Cantidad Devuelta</th>
+                  )}
+                  {eventStatus === "Finalizado Parcialmente" && (
+                    <th style={styles.tableHeader}>Cantidad Faltante</th>
+                  )}
+                </tr>
+              </thead>
+              <tbody>
+                {productosFormFinishEvent.map((producto) => (
+                  <tr key={producto.id} style={styles.tableRow}>
+                    <td style={styles.tableCell}>{producto.attributes.Sku}</td>
+                    <td style={styles.tableCell}>{producto.attributes.Nombre}</td>
+                    <td style={styles.tableCell}>{producto.quantity}</td>
+                    {(eventStatus === "Finalizado" || eventStatus === "Finalizado Parcialmente") && (
+                      <td style={styles.tableCell}>{producto.cantidad_retornada ?? 0}</td>
+                    )}
+                    {eventStatus === "Finalizado Parcialmente" && (
+                      <td style={styles.tableCell}>{producto.cantidad_faltante ?? 0}</td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
           </div>
         </div>
       )}

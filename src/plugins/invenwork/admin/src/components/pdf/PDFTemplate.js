@@ -13,8 +13,8 @@ const PDFTemplate = ({ data, eventStatus }) => {
   const gruposProductos = [];
   if (productos && productos.length) {
     let start = 0;
-    let firstPageSize = 20;
-    let nextPageSize = 30;
+    let firstPageSize = 21;
+    let nextPageSize = 28;
 
     gruposProductos.push(productos.slice(start, firstPageSize));
     start = firstPageSize;

@@ -39,7 +39,7 @@ const Productos = () => {
         primaryAction={
           !isFormVisible && (
             <Button onClick={handleCreateNewProduct} variant="default">
-              Crear nuevo producto
+              Crear nuevo equipo
             </Button>
           )
         }
