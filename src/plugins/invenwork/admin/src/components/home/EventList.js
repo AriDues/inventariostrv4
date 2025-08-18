@@ -98,7 +98,7 @@ const EventList = ({setIsCardVisible, setDatosForm, setEventStatus}) => {
         // Consultar productos en eventos para cada evento &populate[producto][fields][0]=Nombre
         const productosEnEventosPromises = eventosData.data.map(async (event) => {
             const response = await fetch(
-            `/api/productos-en-eventos?filters[evento][id][$eq]=${event.id}&populate=producto`
+            `/api/productos-en-eventos?filters[evento][id][$eq]=${event.id}&populate=producto&pagination[pageSize]=1000`
             );
             const data = await response.json();
             //console.log(" data ***** " + JSON.stringify(data, null, 2));
