@@ -490,13 +490,15 @@ const addProduct = (product) => {
           <div style={styles.rightCard}>
             {/* Botón en esquina superior derecha */}
             {!moreProducts && (
-              <button 
-                id="asignarMasProductos" 
-                onClick={() => setMoreProducts(true)} 
-                style={styles.addEquiposButton}
-              >
-                Asignar más equipos
-              </button>
+              eventStatus !== "Finalizado" && eventStatus !== "Finalizado Parcialmente" && (
+                <button 
+                  id="asignarMasProductos" 
+                  onClick={() => setMoreProducts(true)} 
+                  style={styles.addEquiposButton}
+                >
+                  Asignar más equipos
+                </button>
+              )
             )}
 
             {/* Cuando moreProducts es true, el buscador aparece flotante */}
