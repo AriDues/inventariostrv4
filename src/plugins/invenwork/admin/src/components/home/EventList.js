@@ -47,6 +47,7 @@ const styles = {
     justifyContent: "center",
     gap: "8px",
     marginTop: "20px",
+    marginBottom: "40px",
   },
   paginationButton: {
     backgroundColor: "#4945ff",
@@ -168,7 +169,7 @@ const EventList = ({setIsCardVisible, setDatosForm, setEventStatus}) => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
-    <div>
+    <>
       <div style={styles.gridContainer}>
         <div style={{gridColumn: "span 4", textAlign: "left", marginBottom: "20px", display: "block" }}>
           <h3 style={{ marginBottom: "10px" }}>Filtros</h3>
@@ -236,7 +237,7 @@ const EventList = ({setIsCardVisible, setDatosForm, setEventStatus}) => {
           </button>
         ))}
       </div>
-    </div>
+    </>
   );
 };
 
