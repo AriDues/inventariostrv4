@@ -1,3 +1,8 @@
+.pdf-logo {
+  height: 50px; /* ajusta el tamaño según necesites */
+  object-fit: contain;
+}
+
 .pdf-template {
     background: white;
     padding: 20px;

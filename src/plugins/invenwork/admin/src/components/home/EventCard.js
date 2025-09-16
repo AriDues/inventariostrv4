@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { BeatLoader } from "react-spinners";
 import { Button, Typography, TextInput, IconButton } from "@strapi/design-system";
 import { Search } from '@strapi/icons';
 import Modal from "./Modal";
@@ -10,258 +11,94 @@ import PDFTemplate from '../pdf/PDFTemplate';
 
 const isEmpty = (obj) => !obj || Object.keys(obj).length === 0;
 
-// Estilos actualizados
 const styles = {
-  mainContainer: {
-    display: 'flex',
-    gap: '2rem',
-    maxWidth: '1200px',
-    margin: '0 auto',
-    marginBottom: '3rem',
-  },
-  leftCard: {
-    flex: 0.4,
-    border: "1px solid #e0e0e0",
-    borderRadius: "4px",
-    padding: "20px",
-    backgroundColor: "#f9f9f9",
-    height: 'fit-content',
-  },
-  rightCard: {
-    position: "relative",
-    flex: 0.6,
-    border: "1px solid #e0e0e0",
-    borderRadius: "4px",
-    padding: "20px",
-    backgroundColor: "#f9f9f9",
-  },
-  addEquiposButton: {
-  position: 'absolute',
-  top: '15px',
-  right: '15px',
-  backgroundColor: "#4945ff",
-  color: "white",
-  padding: "8px 16px",
-  border: "none",
-  borderRadius: "4px",
-  cursor: "pointer",
-  },
-  overlaySearch: {
-    position: 'absolute',
-    top: '0', // debajo del h3 y botón
-    left: '0',
-    right: '0',
-    background: '#fff',
-    border: "1px solid #e0e0e0",
-    borderRadius: "6px",
-    padding: "20px",
-    zIndex: 20,
-    boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-  },
-  cardTitle: {
-    fontSize: "20px",
-    fontWeight: "bold",
-    marginBottom: "16px",
-  },
-  cardContent: {
-    fontSize: "16px",
-    lineHeight: "1.5",
-    marginBottom: "12px",
-  },
-  cardContentBold: {
-    fontWeight: "bold"
-  },
-  productTitle: {
-    fontSize: "18px",
-    fontWeight: "bold",
-    marginBottom: "30px",
-  },
-  productTable: {
-    width: "100%",
-    borderCollapse: "collapse",
-    marginBottom: "10px",
-  },
-  tableHeader: {
-    backgroundColor: "#f8f9fa",
-    padding: "12px",
-    textAlign: "left",
-    borderBottom: "1px solid #e0e0e0",
-  },
-  tableRow: {
-    borderBottom: "1px solid #e0e0e0",
-  },
-  tableCell: {
-    padding: "12px",
-    textAlign: "left",
-  },
-  buttonContainerRow: {
-    display: "flex",
-    flexDirection: 'column',
-    gap: '1rem',
-    marginTop: "16px",
-  },
-  closeButtonRight: {
-    backgroundColor: "#dc3545",
-    color: "white",
-    padding: "10px 20px",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-  },
-  printButtonLeft: {
-    backgroundColor: "#4945ff",
-    color: "white",
-    padding: "10px 20px",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-    marginRight: "6px",
-  },
-  finishEventButtonLeft: {
-    backgroundColor: "#d58700",
-    color: "white",
-    padding: "10px 20px",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer",
-  },
-  searchInputContainer: {
-    position: 'relative',
-    margin: '20px 0',
-  },
-  searchInputWrapper: {
-    position: 'relative',
-    alignItems: 'center',
-  },
-  searchInput: {
-    width: '100%',
-    padding: '10px 40px 10px 15px',
-    border: '1px solid #e0e0e0',
-    borderRadius: '4px',
-    fontSize: '16px',
-  },
-  floatingPreview: {
-    width: '100%',
-    maxHeight: '300px',
-    overflowY: 'auto',
-    backgroundColor: 'white',
-    border: '1px solid #e0e0e0',
-    borderRadius: '4px',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-    zIndex: 1000,
-    marginTop: '5px',
-    marginBottom: "2rem",
-  },
-  resultItemTable: {
-    padding: "10px",
-    margin: "5px",
-    cursor: 'pointer',
-    transition: 'background-color 0.3s ease',
-    display: 'block'
-  },
-  invisibleTable: {
-    width: '100%',
-    borderCollapse: 'collapse',
-    border: 'none'
-  },
-  leftColumn: {
-    textAlign: 'left',
-    verticalAlign: 'middle',
-    padding: '8px 0',
-    border: 'none'
-  },
-  rightColumnTable: {
-    textAlign: 'right',
-    verticalAlign: 'middle',
-    width: 'auto',
-    border: 'none'
-  },
-  inputButtonContainer: {
-    display: 'flex',
-    alignItems: 'end',
-    gap: '10px',
-    justifyContent: 'flex-end'
-  },
-  quantityInputTable: {
-    width: '80px',
-  },
-  cardContentContainerSearchPProduct: {
-    position: 'relative',
-    border: "1px solid #e0e0e0",
-    borderRadius: "4px",
-    padding: "20px",
-    gap: "24px",
-    marginBottom: "1rem",
-  },
-  closeIconButton: {
-    position: 'absolute',
-    top: '5px',
-    right: '5px',
-    background: 'none',
-    border: 'none',
-    fontSize: '18px',
-    fontWeight: 'bold',
-    color: '#dc3545',
-    cursor: 'pointer',
-    padding: '5px',
-    zIndex: 10,
-    transition: 'color 0.2s ease'
-  },
+  mainContainer: { display: 'flex', gap: '2rem', maxWidth: '1200px', margin: '0 auto', marginBottom: '3rem' },
+  leftCard: { flex: 0.4, border: "1px solid #e0e0e0", borderRadius: "4px", padding: "20px", backgroundColor: "#f9f9f9", height: 'fit-content' },
+  rightCard: { position: "relative", flex: 0.6, border: "1px solid #e0e0e0", borderRadius: "4px", padding: "20px", backgroundColor: "#f9f9f9" },
+  addEquiposButton: { position: 'absolute', top: '15px', right: '15px', backgroundColor: "#4945ff", color: "white", padding: "8px 16px", border: "none", borderRadius: "4px", cursor: "pointer" },
+  overlaySearch: { position: 'absolute', top: '0', left: '0', right: '0', background: '#fff', border: "1px solid #e0e0e0", borderRadius: "6px", padding: "20px", zIndex: 20, boxShadow: '0 4px 12px rgba(0,0,0,0.15)' },
+  cardTitle: { fontSize: "20px", fontWeight: "bold", marginBottom: "16px" },
+  cardContent: { fontSize: "16px", lineHeight: "1.5", marginBottom: "12px" },
+  cardContentBold: { fontWeight: "bold" },
+  productTitle: { fontSize: "18px", fontWeight: "bold", marginBottom: "30px" },
+  productTable: { width: "100%", borderCollapse: "collapse", marginBottom: "10px" },
+  tableHeader: { backgroundColor: "#f8f9fa", padding: "12px", textAlign: "left", borderBottom: "1px solid #e0e0e0" },
+  tableRow: { borderBottom: "1px solid #e0e0e0" },
+  tableCell: { padding: "12px", textAlign: "left" },
+  buttonContainerRow: { display: "flex", flexDirection: 'column', gap: '1rem', marginTop: "16px" },
+  closeButtonRight: { backgroundColor: "#dc3545", color: "white", padding: "10px 20px", border: "none", borderRadius: "4px", cursor: "pointer" },
+  printButtonLeft: { backgroundColor: "#4945ff", color: "white", padding: "10px 20px", border: "none", borderRadius: "4px", cursor: "pointer", marginRight: "6px" },
+  finishEventButtonLeft: { backgroundColor: "#d58700", color: "white", padding: "10px 20px", border: "none", borderRadius: "4px", cursor: "pointer" },
+  searchInputContainer: { position: 'relative', margin: '20px 0' },
+  searchInputWrapper: { position: 'relative', alignItems: 'center' },
+  searchInput: { width: '100%', padding: '10px 40px 10px 15px', border: '1px solid #e0e0e0', borderRadius: '4px', fontSize: '16px' },
+  floatingPreview: { width: '100%', maxHeight: '300px', overflowY: 'auto', backgroundColor: 'white', border: '1px solid #e0e0e0', borderRadius: '4px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', zIndex: 1000, marginTop: '5px', marginBottom: "2rem" },
+  resultItemTable: { padding: "10px", margin: "5px", cursor: 'pointer', transition: 'background-color 0.3s ease', display: 'block' },
+  invisibleTable: { width: '100%', borderCollapse: 'collapse', border: 'none' },
+  leftColumn: { textAlign: 'left', verticalAlign: 'middle', padding: '8px 0', border: 'none' },
+  rightColumnTable: { textAlign: 'right', verticalAlign: 'middle', width: 'auto', border: 'none' },
+  inputButtonContainer: { display: 'flex', alignItems: 'end', gap: '10px', justifyContent: 'flex-end' },
+  quantityInputTable: { width: '80px' },
+  cardContentContainerSearchPProduct: { position: 'relative', border: "1px solid #e0e0e0", borderRadius: "4px", padding: "20px", gap: "24px", marginBottom: "1rem" },
+  closeIconButton: { position: 'absolute', top: '5px', right: '5px', background: 'none', border: 'none', fontSize: '18px', fontWeight: 'bold', color: '#dc3545', cursor: 'pointer', padding: '5px', zIndex: 10, transition: 'color 0.2s ease' },
 };
 
 const EventCard = ({ datosForm, setIsCardVisible, eventStatus }) => {
-
-const handleGeneratePDF = async () => {
-  try {
-    const pdfElement = document.getElementById('pdf-content');
-    if (!pdfElement) {
-      console.error("No se encontró el elemento con id 'pdf-content'");
-      return;
-    }
-
-    const pdfPages = pdfElement.querySelectorAll('.pdf-page');
-
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pageWidth = 210;
-    const pageHeight = 297;
-    const margin = 10;
-    const imgWidth = pageWidth - margin * 2;
-
-    for (let i = 0; i < pdfPages.length; i++) {
-      const page = pdfPages[i];
-
-      if (page instanceof HTMLElement) {
-        // Captura la página completa incluyendo footer
-        const canvas = await html2canvas(page, { scale: 2, useCORS: true });
-        const imgData = canvas.toDataURL('image/png');
-
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-        if (i > 0) pdf.addPage();
-        pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
-      }
-    }
-
-    pdf.save('evento-resumen.pdf');
-  } catch (error) {
-    console.error('Error generando PDF:', error);
-  }
-};
-
-
   const [isYesFinishevent, setIsYesFinishevent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loadingOrdenSalida, setLoadingOrdenSalida] = useState(false); // Nuevo estado
   const [datosFormFinishEvent, setDatosFormFinishEvent] = useState([]);
   const [productosFormFinishEvent, setProductosFormFinishEvent] = useState([]);
   const [isFirstModalOpen, setIsFirstModalOpen] = useState(false);
   const [isSecondModalOpen, setIsSecondModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
-
-// Nuevo estado con nombres más claros
-const [productosAsignados, setProductosAsignados] = useState([]);
-
+  const [productosAsignados, setProductosAsignados] = useState([]);
   const [hoveredItem, setHoveredItem] = useState(null);
   const [moreProducts, setMoreProducts] = useState(false);
+  // Generar PDF
+  const handleGeneratePDF = async () => {
+    try {
+      const pdfElement = document.getElementById('pdf-content');
+      if (!pdfElement) {
+        console.error("No se encontró el elemento con id 'pdf-content'");
+        return;
+      }
+
+      const pdfPages = pdfElement.querySelectorAll('.pdf-page');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pageWidth = 210;
+      const margin = 10;
+      const imgWidth = pageWidth - margin * 2;
+
+      for (let i = 0; i < pdfPages.length; i++) {
+        const page = pdfPages[i];
+        if (page instanceof HTMLElement) {
+          const canvas = await html2canvas(page, { scale: 2, useCORS: true });
+          const imgData = canvas.toDataURL('image/png');
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          if (i > 0) pdf.addPage();
+          pdf.addImage(imgData, 'PNG', margin, margin, imgWidth, imgHeight);
+        }
+      }
+
+      pdf.save('evento-resumen.pdf');
+    } catch (error) {
+      console.error('Error generando PDF:', error);
+    }
+  };
+
+  // Manejar click en "Orden de salida" con loader y texto
+  const handleOrdenSalida = async () => {
+    setLoadingOrdenSalida(true);
+    try {
+      await handleGeneratePDF();
+    } catch (error) {
+      console.error("Error en Orden de salida:", error);
+    } finally {
+      setLoadingOrdenSalida(false);
+    }
+  };
 
   useEffect(() => {
     fetchEventProducts();
@@ -272,6 +109,7 @@ const [productosAsignados, setProductosAsignados] = useState([]);
 
   const fetchEventProducts = async () => {
     try {
+      setLoading(true);
       const response = await fetch(`/api/productos-en-eventos?filters[evento][id][$eq]=${datosForm.evento.id}`);
       const data = await response.json();
 
@@ -279,7 +117,7 @@ const [productosAsignados, setProductosAsignados] = useState([]);
         datosForm.productos.map(async (product, index) => {
           const productData = data.data[index];
           let categoria = 'Sin categoría';
-    
+
           try {
             const catResponse = await fetch(`/api/productos/${product.id}?populate=categoria`);
             const catData = await catResponse.json();
@@ -287,7 +125,7 @@ const [productosAsignados, setProductosAsignados] = useState([]);
           } catch (error) {
             console.error('Error obteniendo categoría:', error);
           }
-    
+
           return {
             ...product,
             cantidad_retornada: productData?.attributes?.cantidad_retornada || 0,
@@ -300,8 +138,10 @@ const [productosAsignados, setProductosAsignados] = useState([]);
       const datosFormUpdate = { ...datosForm, productos: categoriaCatidadUpdateProducts };
       setProductosFormFinishEvent(categoriaCatidadUpdateProducts);
       setDatosFormFinishEvent(datosFormUpdate);
-    } catch (error) { 
+    } catch (error) {
       console.error('Error al obtener los productos del evento:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -322,87 +162,96 @@ const [productosAsignados, setProductosAsignados] = useState([]);
     }
   };
 
-// Al buscar productos, inicializamos con quantity = 1
-const fetchProducts = () => {
-  if (searchQuery.trim() !== '') {
-    fetch(`/api/productos?filters[Nombre][$contains]=${searchQuery}`)
-      .then((res) => res.json())
-      .then((data) =>
-        setSearchResults(
-          data.data.map((p) => ({ ...p, quantity: 1 })) // cantidad inicial
+  const fetchProducts = () => {
+    if (searchQuery.trim() !== '') {
+      setLoading(true);
+      fetch(`/api/productos?filters[Nombre][$contains]=${searchQuery}`)
+        .then((res) => res.json())
+        .then((data) =>
+          setSearchResults(
+            data.data.map((p) => ({ ...p, quantity: 1 }))
+          )
         )
-      )
-      .catch((error) => console.error('Error fetching products:', error));
-  } else {
-    setSearchResults([]);
-  }
-};
+        .catch((error) => console.error('Error fetching products:', error))
+        .finally(() => setLoading(false));
+    } else {
+      setSearchResults([]);
+    }
+  };
 
-const addProductEvent = async (p) => {
+  const addProductEvent = async (p) => {
+    setLoading(true);
+    try {
+      const newProductPromise = async (producto) => {
+        return fetch('/api/productos-en-eventos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            data: {
+              cantidad: producto[0].quantity,
+              estatus: "Pendiente",
+              producto: producto[0].id,
+              almacen: 1,
+              evento: datosForm.evento.id
+            }
+          })
+        });
+      };
 
-  const newProductPromise = async (producto) => {
+      const response = await newProductPromise(p);
 
-    console.log(JSON.stringify(producto[0].quantity, null, 2) + " pretty")
+      if (!response.ok) {
+        console.log("No se agrego el producto");
+        throw new Error('Error al agregar producto en evento');
+      }
 
-    return fetch('/api/productos-en-eventos', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        data: {
-          cantidad: producto[0].quantity,
-          estatus: "Pendiente",
-          producto: producto[0].id, // ID del producto
-          almacen: 1,
-          evento: datosForm.evento.id // Relación con el evento
-        }
-      })
+      setSearchQuery('');
+      setSearchResults([]);
+      console.log("Se agrego el producto");
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const addProduct = (product) => {
+    setProductosFormFinishEvent((prev) => {
+      const existingIndex = prev.findIndex((p) => p.id === product.id);
+
+      if (existingIndex !== -1) {
+        const updated = [...prev];
+        updated[existingIndex] = {
+          ...updated[existingIndex],
+          quantity: product.quantity ?? updated[existingIndex].quantity,
+        };
+        return updated;
+      } else {
+        const newProduct = [{ ...product, quantity: product.quantity ?? 1 }];
+        addProductEvent(newProduct);
+        return [...prev, { ...product, quantity: product.quantity ?? 1 }];
+      }
     });
   };
 
-  // Ejecutar la solicitud para este producto
-  const response = await newProductPromise(p);
-
-  if (!response.ok) {
-    console.log("No se agrego el producto");
-    throw new Error('Error al agregar producto en evento');
-  }
-
-  // Limpiar búsqueda
-  setSearchQuery('');
-  setSearchResults([]);
-
-  console.log("Se agrego el producto");
-
-};
-
-const addProduct = (product) => {
-  //actualiza el dataset en el front 
-  setProductosFormFinishEvent((prev) => {
-    const existingIndex = prev.findIndex((p) => p.id === product.id);
-
-    if (existingIndex !== -1) {
-      // Si ya existe, actualizamos cantidad
-      const updated = [...prev];
-      updated[existingIndex] = {
-        ...updated[existingIndex],
-        quantity: product.quantity ?? updated[existingIndex].quantity,
-      };
-      return updated;
-    } else {
-      //se agrega nuevo producto al evento desde db
-      const newProduct = [{ ...product, quantity: product.quantity ?? 1 }];
-      addProductEvent(newProduct);
-      // Si no existe, agregamos al dataset en el front
-      return [...prev, { ...product, quantity: product.quantity ?? 1 }];
-    }
-  });
-
-};
-
   const handleSecondModalClose = () => toggleSecondModal();
-
   return (
     <>
+      {loading && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0,
+          width: '100%', height: '100%',
+          backgroundColor: 'rgba(255,255,255,0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999
+        }}>
+          <BeatLoader color="#4945ff" size={15} />
+        </div>
+      )}
+
       {isEmpty(datosForm) ? (
         <div style={styles.leftCard}>
           <h2 style={styles.cardTitle}>Evento sin información</h2>
@@ -450,45 +299,66 @@ const addProduct = (product) => {
               </p> 
             </div>
 
-            <div style={styles.buttonContainerRow}>
-              <div>
-                {eventStatus === "Finalizado Parcialmente" && (
-                  <>
-                    <button onClick={handleGeneratePDF} style={styles.printButtonLeft}>
-                      Orden retorno parcial
-                    </button>
-                    <button onClick={toggleFirstModal} style={styles.finishEventButtonLeft}>
-                      Finalizar Evento
-                    </button>
-                  </>
-                )} 
-
-                {eventStatus === "Finalizado" && (
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '10px', marginTop: '16px' }}>
+              {eventStatus === "Finalizado Parcialmente" && (
+                <>
                   <button onClick={handleGeneratePDF} style={styles.printButtonLeft}>
-                    Orden de retorno
+                    Orden retorno parcial
                   </button>
-                )}                                                                      
+                  <button onClick={toggleFirstModal} style={styles.finishEventButtonLeft}>
+                    Finalizar Evento
+                  </button>
+                </>
+              )} 
 
-                {eventStatus !== "Finalizado" && eventStatus !== "Finalizado Parcialmente" && (
-                  <>
-                    <button onClick={handleGeneratePDF} style={styles.printButtonLeft}>
-                      Orden de salida
-                    </button>
-                    <button onClick={toggleFirstModal} style={styles.finishEventButtonLeft}>
-                      Finalizar Evento
-                    </button>
-                  </>
-                )}                    
-              </div>
-              {/* <button onClick={() => setIsCardVisible(false)} style={styles.closeButtonRight}>
-                CERRAR
-              </button> */}
+              {eventStatus === "Finalizado" && (
+                <button onClick={handleGeneratePDF} style={styles.printButtonLeft}>
+                  Orden de retorno
+                </button>
+              )}                                                                      
+
+              {eventStatus !== "Finalizado" && eventStatus !== "Finalizado Parcialmente" && (
+                <>
+                  <button
+                    onClick={handleOrdenSalida}
+                    style={{
+                      ...styles.printButtonLeft,
+                      width: "auto",
+                      backgroundColor: loadingOrdenSalida ? "#d3d3d3" : styles.printButtonLeft.backgroundColor,
+                      color: loadingOrdenSalida ? "#333" : styles.printButtonLeft.color,
+                      cursor: loadingOrdenSalida ? "not-allowed" : "pointer",
+                      animation: loadingOrdenSalida ? "blink 1s infinite" : "none",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "6px",
+                      minWidth: "140px"
+                    }}
+                    disabled={loadingOrdenSalida}
+                  >
+                    {loadingOrdenSalida ? "Generando PDF..." : "Orden de salida"}
+                  </button>
+
+                  <button onClick={toggleFirstModal} style={styles.finishEventButtonLeft}>
+                    Finalizar Evento
+                  </button>
+
+                  {/* Animación de parpadeo */}
+                  <style>
+                    {`
+                      @keyframes blink {
+                        0% { opacity: 1; }
+                        50% { opacity: 0.6; }
+                        100% { opacity: 1; }
+                      }
+                    `}
+                  </style>
+                </>
+              )}                    
             </div>
           </div>
-
           {/* Columna Derecha - Productos */}
           <div style={styles.rightCard}>
-            {/* Botón en esquina superior derecha */}
             {!moreProducts && (
               eventStatus !== "Finalizado" && eventStatus !== "Finalizado Parcialmente" && (
                 <button 
@@ -501,7 +371,6 @@ const addProduct = (product) => {
               )
             )}
 
-            {/* Cuando moreProducts es true, el buscador aparece flotante */}
             {moreProducts && (
               <div style={styles.overlaySearch}>
                 <button 
@@ -606,14 +475,13 @@ const addProduct = (product) => {
                     {(eventStatus === "Finalizado" || eventStatus === "Finalizado Parcialmente") && (
                       <td style={styles.tableCell}>{producto.cantidad_retornada ?? 0}</td>
                     )}
-                    {eventStatus === "Finalizado Parcialmente" && (
+                                        {eventStatus === "Finalizado Parcialmente" && (
                       <td style={styles.tableCell}>{producto.cantidad_faltante ?? 0}</td>
                     )}
                   </tr>
                 ))}
               </tbody>
             </table>
-
           </div>
         </div>
       )}
@@ -636,7 +504,7 @@ const addProduct = (product) => {
         </Modal>
       }
 
-      {/* PDF Template */}
+      {/* PDF Template oculto para generar PDF */}
       <div style={{ position: 'absolute', left: '-9999px', visibility: 'visible' }}>
         <PDFTemplate data={{ ...datosFormFinishEvent, productos: productosFormFinishEvent }} eventStatus={eventStatus}/>
       </div>

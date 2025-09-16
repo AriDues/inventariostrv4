@@ -1,3 +1,4 @@
+import logo from '../../assets/logo.png';
 import React from 'react';
 import '../../styles/PDFTemplate.css';
 
@@ -10,17 +11,32 @@ const PDFTemplate = ({ data, eventStatus }) => {
   const { evento, productos } = data;
   const currentDate = new Date().toLocaleString();
 
+  // 🔹 1. Ordenar productos por categoría y luego por nombre
+  const productosOrdenados = [...(productos || [])].sort((a, b) => {
+    const catA = (a.categoria || '').toLowerCase();
+    const catB = (b.categoria || '').toLowerCase();
+    if (catA < catB) return -1;
+    if (catA > catB) return 1;
+
+    const nameA = (a?.attributes?.Nombre || '').toLowerCase();
+    const nameB = (b?.attributes?.Nombre || '').toLowerCase();
+    if (nameA < nameB) return -1;
+    if (nameA > nameB) return 1;
+    return 0;
+  });
+
+  // 🔹 2. Agrupar productos ordenados en páginas
   const gruposProductos = [];
-  if (productos && productos.length) {
+  if (productosOrdenados.length) {
     let start = 0;
     let firstPageSize = 19;
     let nextPageSize = 26;
 
-    gruposProductos.push(productos.slice(start, firstPageSize));
+    gruposProductos.push(productosOrdenados.slice(start, firstPageSize));
     start = firstPageSize;
 
-    while (start < productos.length) {
-      gruposProductos.push(productos.slice(start, start + nextPageSize));
+    while (start < productosOrdenados.length) {
+      gruposProductos.push(productosOrdenados.slice(start, start + nextPageSize));
       start += nextPageSize;
     }
   }
@@ -34,14 +50,17 @@ const PDFTemplate = ({ data, eventStatus }) => {
           {pageIndex === 0 && (
             <>
               <div className="header">
-                <h2>
-                  {eventStatus === nameStatus.finish
-                    ? "Orden de Retorno"
-                    : eventStatus === nameStatus.finishParcial
-                      ? "Orden de Retorno Parcial"
-                      : "Orden de Salida"}
-                </h2>
-                <p className="current-date">{currentDate}</p>
+                <img src={logo} alt="Logo" className="pdf-logo" />
+                <div style={{ textAlign: 'right' }}>
+                  <h2>
+                    {eventStatus === nameStatus.finish
+                      ? "Orden de Retorno"
+                      : eventStatus === nameStatus.finishParcial
+                        ? "Orden de Retorno Parcial"
+                        : "Orden de Salida"}
+                  </h2>
+                  <p className="current-date">{currentDate}</p>
+                </div>
               </div>
 
               <div className="event-info">
@@ -54,10 +73,10 @@ const PDFTemplate = ({ data, eventStatus }) => {
                   <p><strong>Hora inicio:</strong> {evento?.attributes?.HoraInicio}</p>
                   <p><strong>Hora fin:</strong> {evento?.attributes?.HoraFin}</p>
                 </div>
-                <p><strong>Total de productos:</strong> {productos.length}</p>
+                <p><strong>Total de productos:</strong> {productosOrdenados.length}</p>
               </div>
 
-              <h2 className="subtitle">Productos del evento:</h2>
+              <h2 className="subtitle">Equipos del evento:</h2>
             </>
           )}
 
