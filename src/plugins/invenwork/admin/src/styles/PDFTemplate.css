@@ -10,7 +10,6 @@
     min-height: 1123px;
     position: relative;
     box-sizing: border-box;
-    /* padding-bottom removido porque footer ya no es absolute */
 }
 
 .header {
@@ -20,6 +19,7 @@
     border-bottom: 2px solid #000;
     padding-bottom: 15px;
     margin-bottom: 20px;
+    page-break-after: avoid;
 }
 
 .header h2 {
@@ -36,6 +36,7 @@
     font-size: 24px;
     margin-bottom: 15px;
     text-align: center;
+    page-break-after: avoid;
 }
 
 .details-grid {
@@ -43,6 +44,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     margin-bottom: 20px;
+    page-break-inside: avoid;
 }
 
 .subtitle {
@@ -50,36 +52,58 @@
     margin: 25px 0 15px 0;
     border-bottom: 1px solid #ddd;
     padding-bottom: 5px;
+    page-break-after: avoid;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 30px;
+    page-break-inside: auto;
 }
 
 .table th, .table td {
     border: 1px solid #000;
     padding: 10px;
     text-align: left;
+    word-wrap: break-word;
+    page-break-inside: avoid;
 }
 
 .table th {
     background-color: #f0f0f0;
     font-weight: 600;
+    page-break-after: avoid;
+}
+
+.table tr {
+    page-break-inside: avoid;
+}
+
+/* CONTROL ESPECÍFICO PARA FORZAR SALTO DE PÁGINA EN LA PRIMERA TABLA */
+.table.first-table tr:nth-child(15) {
+    page-break-after: always !important;
+}
+
+/* Alternativamente, si necesitas más control, usa esta clase en filas específicas */
+.force-page-break {
+    page-break-after: always !important;
 }
 
 /* Footer optimizado manteniendo estilos originales */
 .footer {
-    position: relative; /* cambiado de absolute a relative */
-    margin-top: 15px; /* Reducido de 20px a 15px */
+    position: relative;
+    margin-top: 15px;
+    page-break-inside: avoid;
 }
 
 .signatures {
     display: flex;
     justify-content: space-between;
-    margin-top: 35px; /* Reducido de 50px a 35px */
-    margin-bottom: 20px; /* Reducido de 30px a 20px */
+    margin-top: 35px;
+    margin-bottom: 20px;
+    page-break-before: avoid;
+    page-break-inside: avoid;
 }
 
 .signature-box {
@@ -89,14 +113,14 @@
 .generated-info {
     font-size: 12px;
     color: #666;
-    margin-top: 15px; /* Reducido de 20px a 15px */
+    margin-top: 15px;
 }
 
 .page-number {
     text-align: right;
     font-size: 12px;
     color: #666;
-    margin-top: 8px; /* Reducido de 10px a 8px */
+    margin-top: 8px;
 }
 
 /* Configuraciones específicas para impresión */
@@ -108,6 +132,11 @@
         padding: 15mm;
         margin: 0;
         page-break-inside: auto;
+    }
+    
+    @page {
+        size: A4;
+        margin: 15mm;
     }
     
     /* Evitar cortes en elementos importantes */
@@ -123,19 +152,29 @@
         page-break-inside: avoid;
     }
     
+    /* FORZAR SALTO DESPUÉS DE LA FILA 14 EN LA PRIMERA TABLA */
+    .table.first-table tr:nth-child(14) {
+        page-break-after: always !important;
+    }
+    
     .signatures {
         page-break-before: avoid;
-        page-break-inside: avoid;
+        margin-top: 25px;
+        margin-bottom: 15px;
     }
     
     .footer {
         page-break-inside: avoid;
+        margin-top: 10px;
     }
-}
-
-@page {
-    size: A4;
-    margin: 15mm;
+    
+    .generated-info {
+        margin-top: 10px;
+    }
+    
+    .page-number {
+        margin-top: 5px;
+    }
 }
 
 /* Evitar viudas y huérfanas */
@@ -157,11 +196,29 @@ p, .table td {
 
 /* Configuración específica para tablas grandes */
 .large-table {
-    font-size: 10px;
+    font-size: 11px;
 }
 
 .large-table th, 
 .large-table td {
-    padding: 6px;
-    font-size: 10px;
+    padding: 8px;
+    font-size: 11px;
+}
+
+/* ALTURA MÁXIMA PARA LA PRIMERA PÁGINA - AJUSTE CRÍTICO */
+@media print {
+    .pdf-template {
+        height: auto;
+    }
+    
+    /* Limitar contenido en primera página */
+    .first-page-content {
+        max-height: 900px;
+        overflow: visible;
+    }
+    
+    /* Forzar salto después de cierta cantidad de filas */
+    .table tbody tr:nth-child(12) {
+        page-break-after: always !important;
+    }
 }
