@@ -165,3 +165,14 @@ p, .table td {
     padding: 6px;
     font-size: 10px;
 }
+
+/* ===== NUEVO: Forzar salto de página manual ===== */
+.page-break {
+  page-break-after: always; /* para navegadores antiguos */
+  break-after: page;        /* para navegadores modernos */
+}
+
+.table tr.break-here {
+  page-break-after: always;
+  break-after: page;
+}
