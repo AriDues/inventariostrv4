@@ -1,15 +1,51 @@
 .pdf-logo {
-  height: 50px; /* ajusta el tamaño según necesites */
+  height: 50px;
   object-fit: contain;
 }
 
 .pdf-template {
     background: white;
     padding: 20px;
-    width: 794px;
-    min-height: 1123px;
+    width: 794px; /* A4 width in pixels at 96 DPI */
+    max-width: 794px;
+    min-height: 1123px; /* A4 height in pixels at 96 DPI */
     position: relative;
-    /* padding-bottom removido porque footer ya no es absolute */
+    box-sizing: border-box;
+    page-break-inside: avoid;
+    margin: 0 auto;
+}
+
+/* Configuración específica para impresión */
+@media print {
+    .pdf-template {
+        width: 100%;
+        max-width: none;
+        min-height: auto;
+        padding: 15mm;
+        margin: 0;
+        page-break-inside: auto;
+    }
+    
+    /* Evitar cortes en elementos importantes */
+    .header, .title, .subtitle {
+        page-break-after: avoid;
+    }
+    
+    .table {
+        page-break-inside: avoid;
+    }
+    
+    .table tr {
+        page-break-inside: avoid;
+    }
+    
+    .signatures {
+        page-break-before: avoid;
+    }
+    
+    .footer {
+        page-break-inside: avoid;
+    }
 }
 
 .header {
@@ -19,6 +55,7 @@
     border-bottom: 2px solid #000;
     padding-bottom: 15px;
     margin-bottom: 20px;
+    page-break-after: avoid;
 }
 
 .header h2 {
@@ -35,6 +72,7 @@
     font-size: 24px;
     margin-bottom: 15px;
     text-align: center;
+    page-break-after: avoid;
 }
 
 .details-grid {
@@ -42,6 +80,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
     margin-bottom: 20px;
+    page-break-inside: avoid;
 }
 
 .subtitle {
@@ -49,28 +88,44 @@
     margin: 25px 0 15px 0;
     border-bottom: 1px solid #ddd;
     padding-bottom: 5px;
+    page-break-after: avoid;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 30px;
+    page-break-inside: auto;
 }
 
 .table th, .table td {
     border: 1px solid #000;
-    padding: 10px;
+    padding: 8px; /* Reducido ligeramente para mejor ajuste */
     text-align: left;
+    font-size: 12px; /* Tamaño de fuente más pequeño para mejor ajuste */
+    word-wrap: break-word;
+    page-break-inside: avoid;
 }
 
 .table th {
     background-color: #f0f0f0;
     font-weight: 600;
+    page-break-after: avoid;
+}
+
+.table tr {
+    page-break-inside: avoid;
+}
+
+/* Asegurar que las tablas largas se dividan correctamente */
+.table tbody tr:first-child {
+    page-break-before: avoid;
 }
 
 .footer {
-    position: relative; /* cambiado de absolute a relative */
+    position: relative;
     margin-top: 20px;
+    page-break-inside: avoid;
 }
 
 .signatures {
@@ -78,6 +133,8 @@
     justify-content: space-between;
     margin-top: 50px;
     margin-bottom: 30px;
+    page-break-before: avoid;
+    page-break-inside: avoid;
 }
 
 .signature-box {
@@ -95,4 +152,38 @@
     font-size: 12px;
     color: #666;
     margin-top: 10px;
+}
+
+/* Configuraciones adicionales para mejorar la impresión */
+@page {
+    size: A4;
+    margin: 15mm;
+}
+
+/* Evitar viudas y huérfanas */
+p, .table td {
+    orphans: 2;
+    widows: 2;
+}
+
+/* Mejorar el espaciado para evitar cortes */
+.content-section {
+    margin-bottom: 20px;
+    page-break-inside: avoid;
+}
+
+/* Asegurar que el contenido no se desborde */
+* {
+    box-sizing: border-box;
+}
+
+/* Configuración específica para tablas grandes */
+.large-table {
+    font-size: 10px;
+}
+
+.large-table th, 
+.large-table td {
+    padding: 6px;
+    font-size: 10px;
 }
