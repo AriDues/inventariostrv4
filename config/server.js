@@ -7,4 +7,7 @@ module.exports = ({ env }) => ({
   webhooks: {
     populateRelations: env.bool('WEBHOOKS_POPULATE_RELATIONS', false),
   },
+  // Desactivar encuesta NPS y telemetría
+  telemetry: false,
+  analytics: false,
 });
