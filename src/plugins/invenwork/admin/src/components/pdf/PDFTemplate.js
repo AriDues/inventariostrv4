@@ -2,46 +2,39 @@ import logo from '../../assets/logo.png';
 import React from 'react';
 import '../../styles/PDFTemplate.css';
 
+const truncate = (text, max = 15) =>
+  !text ? '' : text.length > max ? text.slice(0, max) + '…' : text;
+
 const PDFTemplate = ({ data, eventStatus }) => {
   const nameStatus = {
     finish: "Finalizado",
     finishParcial: "Finalizado Parcialmente"
   };
-
   const { evento, productos } = data;
   const currentDate = new Date().toLocaleString();
 
-  // 🔹 1. Ordenar productos por categoría y luego por nombre
+  // ordenar productos
   const productosOrdenados = [...(productos || [])].sort((a, b) => {
     const catA = (a.categoria || '').toLowerCase();
     const catB = (b.categoria || '').toLowerCase();
     if (catA < catB) return -1;
     if (catA > catB) return 1;
-
     const nameA = (a?.attributes?.Nombre || '').toLowerCase();
     const nameB = (b?.attributes?.Nombre || '').toLowerCase();
-    if (nameA < nameB) return -1;
-    if (nameA > nameB) return 1;
-    return 0;
+    return nameA.localeCompare(nameB);
   });
 
-  // 🔹 2. Agrupar productos ordenados en páginas
+  // paginar
   const gruposProductos = [];
   if (productosOrdenados.length) {
     let start = 0;
-    let firstPageSize = 19;
-    let nextPageSize = 26;
-
-    gruposProductos.push(productosOrdenados.slice(start, firstPageSize));
-    start = firstPageSize;
-
+    gruposProductos.push(productosOrdenados.slice(start, 19));
+    start = 19;
     while (start < productosOrdenados.length) {
-      gruposProductos.push(productosOrdenados.slice(start, start + nextPageSize));
-      start += nextPageSize;
+      gruposProductos.push(productosOrdenados.slice(start, start + 26));
+      start += 26;
     }
   }
-
-  const totalPages = gruposProductos.length;
 
   return (
     <div id="pdf-content" className="pdf-template">
@@ -75,7 +68,6 @@ const PDFTemplate = ({ data, eventStatus }) => {
                 </div>
                 <p><strong>Total de productos:</strong> {productosOrdenados.length}</p>
               </div>
-
               <h2 className="subtitle">Equipos del evento:</h2>
             </>
           )}
@@ -85,28 +77,27 @@ const PDFTemplate = ({ data, eventStatus }) => {
               <tr>
                 <th>SKU</th>
                 <th>Producto</th>
-                <th>Cantidad solicitada</th>
-                {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && <th>Cantidad devuelta</th>}
-                {(eventStatus === nameStatus.finishParcial) && <th>Cantidad faltante</th>}
+                <th>Cant. solicitada</th>
+                {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && <th>Devuelta</th>}
+                {(eventStatus === nameStatus.finishParcial) && <th>Faltante</th>}
                 <th>Categoría</th>
               </tr>
             </thead>
             <tbody>
-              {grupo.map((producto) => (
-                <tr key={producto?.id}>
-                  <td>{producto?.attributes?.Sku}</td>
-                  <td>{producto?.attributes?.Nombre}</td>
-                  <td>{producto?.quantity}</td>
-                  {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && <td>{producto?.cantidad_retornada}</td>}
-                  {(eventStatus === nameStatus.finishParcial) && <td>{producto?.cantidad_faltante}</td>}
-                  <td>{producto?.categoria}</td>
+              {grupo.map((p) => (
+                <tr key={p?.id}>
+                  <td>{truncate(p?.attributes?.Sku)}</td>
+                  <td>{truncate(p?.attributes?.Nombre)}</td>
+                  <td>{p?.quantity}</td>
+                  {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && <td>{p?.cantidad_retornada}</td>}
+                  {(eventStatus === nameStatus.finishParcial) && <td>{p?.cantidad_faltante}</td>}
+                  <td>{truncate(p?.categoria)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
 
-          {/* Footer solo en la última página */}
-          {pageIndex === totalPages - 1 && (
+          {pageIndex === gruposProductos.length - 1 && (
             <div className="footer">
               <div className="signatures">
                 <div className="signature-box">
@@ -120,8 +111,7 @@ const PDFTemplate = ({ data, eventStatus }) => {
             </div>
           )}
 
-          {/* Número de página */}
-          <p className="page-number">{pageIndex + 1} de {totalPages}</p>
+          <p className="page-number">{pageIndex + 1} de {gruposProductos.length}</p>
         </div>
       ))}
     </div>

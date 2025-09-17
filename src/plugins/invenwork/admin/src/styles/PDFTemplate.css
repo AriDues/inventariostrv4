@@ -1,224 +1,35 @@
-.pdf-logo {
-  height: 50px;
-  object-fit: contain;
-}
+.pdf-logo { height: 50px; object-fit: contain; }
+.pdf-template { background: #fff; padding: 20px; width: 794px; min-height: 1123px; box-sizing: border-box; }
 
-.pdf-template {
-    background: white;
-    padding: 20px;
-    width: 794px;
-    min-height: 1123px;
-    position: relative;
-    box-sizing: border-box;
-}
+.header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 20px; }
+.header h2 { margin: 0; font-size: 22px; }
+.current-date { margin: 0; font-size: 14px; }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #000;
-    padding-bottom: 15px;
-    margin-bottom: 20px;
-    page-break-after: avoid;
-}
+.title { font-size: 24px; margin-bottom: 15px; text-align: center; }
+.details-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; margin-bottom: 20px; }
+.subtitle { font-size: 18px; margin: 25px 0 15px 0; border-bottom: 1px solid #ddd; padding-bottom: 5px; }
 
-.header h2 {
-    margin: 0;
-    font-size: 22px;
-}
-
-.current-date {
-    margin: 0;
-    font-size: 14px;
-}
-
-.title {
-    font-size: 24px;
-    margin-bottom: 15px;
-    text-align: center;
-    page-break-after: avoid;
-}
-
-.details-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
-    page-break-inside: avoid;
-}
-
-.subtitle {
-    font-size: 18px;
-    margin: 25px 0 15px 0;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 5px;
-    page-break-after: avoid;
-}
-
-.table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 30px;
-    page-break-inside: auto;
-}
-
+.table { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 30px; }
 .table th, .table td {
-    border: 1px solid #000;
-    padding: 10px;
-    text-align: left;
-    word-wrap: break-word;
-    page-break-inside: avoid;
+  border: 1px solid #000; padding: 8px; text-align: left;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
+.table th { background-color: #f0f0f0; font-weight: 600; }
 
-.table th {
-    background-color: #f0f0f0;
-    font-weight: 600;
-    page-break-after: avoid;
-}
+/* Anchos fijos */
+.table th:nth-child(1), .table td:nth-child(1){width:70px;}
+.table th:nth-child(2), .table td:nth-child(2){width:150px;}
+.table th:nth-child(3), .table td:nth-child(3){width:80px;}
+.table th:nth-child(4), .table td:nth-child(4){width:80px;}
+.table th:nth-child(5), .table td:nth-child(5){width:100px;}
 
-.table tr {
-    page-break-inside: avoid;
-}
+.footer { margin-top: 15px; }
+.signatures { display: flex; justify-content: space-between; margin-top: 35px; margin-bottom: 20px; }
+.signature-box { width: 45%; }
+.generated-info, .page-number { font-size: 12px; color: #666; text-align: right; }
 
-/* CONTROL ESPECÍFICO PARA FORZAR SALTO DE PÁGINA EN LA PRIMERA TABLA */
-.table.first-table tr:nth-child(15) {
-    page-break-after: always !important;
-}
-
-/* Alternativamente, si necesitas más control, usa esta clase en filas específicas */
-.force-page-break {
-    page-break-after: always !important;
-}
-
-/* Footer optimizado manteniendo estilos originales */
-.footer {
-    position: relative;
-    margin-top: 15px;
-    page-break-inside: avoid;
-}
-
-.signatures {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 35px;
-    margin-bottom: 20px;
-    page-break-before: avoid;
-    page-break-inside: avoid;
-}
-
-.signature-box {
-    width: 45%;
-}
-
-.generated-info {
-    font-size: 12px;
-    color: #666;
-    margin-top: 15px;
-}
-
-.page-number {
-    text-align: right;
-    font-size: 12px;
-    color: #666;
-    margin-top: 8px;
-}
-
-/* Configuraciones específicas para impresión */
 @media print {
-    .pdf-template {
-        width: 100%;
-        max-width: none;
-        min-height: auto;
-        padding: 15mm;
-        margin: 0;
-        page-break-inside: auto;
-    }
-    
-    @page {
-        size: A4;
-        margin: 15mm;
-    }
-    
-    /* Evitar cortes en elementos importantes */
-    .header, .title, .subtitle {
-        page-break-after: avoid;
-    }
-    
-    .table {
-        page-break-inside: auto;
-    }
-    
-    .table tr {
-        page-break-inside: avoid;
-    }
-    
-    /* FORZAR SALTO DESPUÉS DE LA FILA 14 EN LA PRIMERA TABLA */
-    .table.first-table tr:nth-child(14) {
-        page-break-after: always !important;
-    }
-    
-    .signatures {
-        page-break-before: avoid;
-        margin-top: 25px;
-        margin-bottom: 15px;
-    }
-    
-    .footer {
-        page-break-inside: avoid;
-        margin-top: 10px;
-    }
-    
-    .generated-info {
-        margin-top: 10px;
-    }
-    
-    .page-number {
-        margin-top: 5px;
-    }
-}
-
-/* Evitar viudas y huérfanas */
-p, .table td {
-    orphans: 2;
-    widows: 2;
-}
-
-/* Mejorar el espaciado para evitar cortes */
-.content-section {
-    margin-bottom: 20px;
-    page-break-inside: avoid;
-}
-
-/* Asegurar que el contenido no se desborde */
-* {
-    box-sizing: border-box;
-}
-
-/* Configuración específica para tablas grandes */
-.large-table {
-    font-size: 11px;
-}
-
-.large-table th, 
-.large-table td {
-    padding: 8px;
-    font-size: 11px;
-}
-
-/* ALTURA MÁXIMA PARA LA PRIMERA PÁGINA - AJUSTE CRÍTICO */
-@media print {
-    .pdf-template {
-        height: auto;
-    }
-    
-    /* Limitar contenido en primera página */
-    .first-page-content {
-        max-height: 900px;
-        overflow: visible;
-    }
-    
-    /* Forzar salto después de cierta cantidad de filas */
-    .table tbody tr:nth-child(12) {
-        page-break-after: always !important;
-    }
+  .pdf-template { width: 100%; max-width: none; min-height: auto; padding: 15mm; margin: 0; }
+  @page { size: A4; margin: 15mm; }
+  .signatures { margin-top: 25px; margin-bottom: 15px; }
 }
