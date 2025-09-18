@@ -1,5 +1,5 @@
 .pdf-logo {
-  height: 50px;
+  height: 50px; /* ajusta el tamaño según necesites */
   object-fit: contain;
 }
 
@@ -9,7 +9,6 @@
     width: 794px;
     min-height: 1123px;
     position: relative;
-    box-sizing: border-box;
     /* padding-bottom removido porque footer ya no es absolute */
 }
 
@@ -69,17 +68,16 @@
     font-weight: 600;
 }
 
-/* Footer optimizado manteniendo estilos originales */
 .footer {
     position: relative; /* cambiado de absolute a relative */
-    margin-top: 15px; /* Reducido de 20px a 15px */
+    margin-top: 20px;
 }
 
 .signatures {
     display: flex;
     justify-content: space-between;
-    margin-top: 35px; /* Reducido de 50px a 35px */
-    margin-bottom: 20px; /* Reducido de 30px a 20px */
+    margin-top: 50px;
+    margin-bottom: 30px;
 }
 
 .signature-box {
@@ -89,14 +87,14 @@
 .generated-info {
     font-size: 12px;
     color: #666;
-    margin-top: 15px; /* Reducido de 20px a 15px */
+    margin-top: 20px;
 }
 
 .page-number {
     text-align: right;
     font-size: 12px;
     color: #666;
-    margin-top: 8px; /* Reducido de 10px a 8px */
+    margin-top: 10px;
 }
 
 /* Configuraciones específicas para impresión */

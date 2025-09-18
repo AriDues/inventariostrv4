@@ -1,49 +1,54 @@
 .container {
-    padding: 20px;
-    background: #fff;
-  }
-  
-  .title {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-  
-  .table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 15px;
-    margin-top: 40px;
-  }
-  
-  .table th,
-  .table td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center; /* Centra horizontalmente */
-    vertical-align: middle; /* Centra verticalmente */
-  }
-  
-  .input {
-    padding: 4px;
-    border-radius: 4px;
-  }
+  padding: 20px;
+  background: #fff;
 
-  .tdInput {
-    width: 100px;
-  }
-  
-  .button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-  .button:hover {
-    background-color: #0056b3;
-  }
-  
+  /* 🔹 Hacer que el modal se adapte y tenga scroll */
+  max-height: 80vh;        /* altura máxima del contenedor */
+  overflow-y: auto;        /* scroll vertical automático */
+  border-radius: 8px;      /* opcional */
+}
+
+.title {
+  font-size: 18px;         /* un poco más compacto */
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+  margin-top: 20px;        /* más compacto */
+  font-size: 14px;         /* texto más pequeño */
+}
+
+.table th,
+.table td {
+  border: 1px solid #ddd;
+  padding: 6px;            /* celdas más compactas */
+  text-align: center;      /* Centra horizontalmente */
+  vertical-align: middle;  /* Centra verticalmente */
+}
+
+.input {
+  padding: 3px;            /* input más pequeño */
+  border-radius: 4px;
+}
+
+.tdInput {
+  width: 80px;             /* ancho más pequeño para la celda */
+}
+
+.button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;       /* botón más compacto */
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
