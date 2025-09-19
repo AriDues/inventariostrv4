@@ -2,7 +2,7 @@ import logo from '../../assets/logo.png';
 import React from 'react';
 import '../../styles/PDFTemplate.css';
 
-const PDFTemplate = ({ data, eventStatus }) => {
+const PDFTemplate = ({ data, eventStatus }) => { 
   const nameStatus = {
     finish: "Finalizado",
     finishParcial: "Finalizado Parcialmente"
@@ -13,19 +13,22 @@ const PDFTemplate = ({ data, eventStatus }) => {
 
   // 🔹 1. Ordenar productos por categoría y luego por nombre
   const productosOrdenados = [...(productos || [])].sort((a, b) => {
+    // comparar categoría
     const catA = (a.categoria || '').toLowerCase();
     const catB = (b.categoria || '').toLowerCase();
     if (catA < catB) return -1;
     if (catA > catB) return 1;
 
-    const nameA = (a?.attributes?.Nombre || '').toLowerCase();
-    const nameB = (b?.attributes?.Nombre || '').toLowerCase();
+    // comparar nombre dentro de la misma categoría
+    const nameA = (a.attributes?.Nombre || '').toLowerCase();
+    const nameB = (b.attributes?.Nombre || '').toLowerCase();
     if (nameA < nameB) return -1;
     if (nameA > nameB) return 1;
+
     return 0;
   });
 
-  // 🔹 2. Agrupar productos ordenados en páginas
+  // 🔹 Agrupar productos ordenados en páginas
   const gruposProductos = [];
   if (productosOrdenados.length) {
     let start = 0;
@@ -86,8 +89,12 @@ const PDFTemplate = ({ data, eventStatus }) => {
                 <th>SKU</th>
                 <th>Producto</th>
                 <th>Cantidad solicitada</th>
-                {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && <th>Cantidad devuelta</th>}
-                {(eventStatus === nameStatus.finishParcial) && <th>Cantidad faltante</th>}
+                {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && (
+                  <th>Cantidad devuelta</th>
+                )}
+                {(eventStatus === nameStatus.finishParcial) && (
+                  <th>Cantidad faltante</th>
+                )}
                 <th>Categoría</th>
               </tr>
             </thead>
@@ -97,8 +104,12 @@ const PDFTemplate = ({ data, eventStatus }) => {
                   <td>{producto?.attributes?.Sku}</td>
                   <td>{producto?.attributes?.Nombre}</td>
                   <td>{producto?.quantity}</td>
-                  {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && <td>{producto?.cantidad_retornada}</td>}
-                  {(eventStatus === nameStatus.finishParcial) && <td>{producto?.cantidad_faltante}</td>}
+                  {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && (
+                    <td>{producto?.cantidad_retornada}</td>
+                  )}
+                  {(eventStatus === nameStatus.finishParcial) && (
+                    <td>{producto?.cantidad_faltante}</td>
+                  )}
                   <td>{producto?.categoria}</td>
                 </tr>
               ))}
