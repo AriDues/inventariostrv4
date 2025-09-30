@@ -64,6 +64,18 @@ export default {
       .content-manager-loader {
         display: none !important;
       }
+
+      /* Ocultar el elemento específico de la encuesta NPS */
+      .sc-bdvtL.sc-gsDKAQ.hImIuj.gHBEWx,
+      div[transform="translateX(-50%)"].sc-bdvtL,
+      div[class*="sc-bdvtL"][class*="sc-gsDKAQ"][class*="hImIuj"],
+      fieldset.sc-bdvtL.kZobxy,
+      div.sc-bdvtL.sc-gsDKAQ.kZobxy.iNsRQW,
+      div.sc-bdvtL.sc-gsDKAQ.fPfpSe.bZienJ {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+      }
     `;
     document.head.appendChild(style);
 
@@ -74,6 +86,59 @@ export default {
     }
 
     document.body.appendChild(overlay);
+
+    // Función para eliminar encuesta NPS con JavaScript
+    const removeSurveyElements = () => {
+      // Buscar por las clases específicas que viste en la imagen
+      const surveySelectors = [
+        '.sc-bdvtL.sc-gsDKAQ.hImIuj.gHBEWx',
+        'div[transform="translateX(-50%)"]',
+        'fieldset.sc-bdvtL.kZobxy',
+        '.sc-bdvtL.sc-gsDKAQ.kZobxy.iNsRQW',
+        '.sc-bdvtL.sc-gsDKAQ.fPfpSe.bZienJ'
+      ];
+
+      surveySelectors.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => {
+          if (el) {
+            el.style.display = 'none';
+            el.style.visibility = 'hidden';
+            el.style.opacity = '0';
+            // Intentar remover completamente
+            try {
+              el.remove();
+            } catch (e) {
+              // Si no se puede remover, solo ocultar
+            }
+          }
+        });
+      });
+
+      // Buscar por texto específico de la encuesta
+      const allElements = document.querySelectorAll('*');
+      allElements.forEach(el => {
+        if (el.textContent && (
+          el.textContent.includes('How likely are you to recommend') ||
+          el.textContent.includes('Not at all likely') ||
+          el.textContent.includes('Extremely likely')
+        )) {
+          let parent = el;
+          // Subir hasta encontrar el contenedor principal
+          for (let i = 0; i < 5; i++) {
+            if (parent.parentElement) {
+              parent = parent.parentElement;
+            }
+          }
+          parent.style.display = 'none';
+          try {
+            parent.remove();
+          } catch (e) {
+            // Si no se puede remover, solo ocultar
+          }
+        }
+      });
+    };
 
     // ----------------- NUEVO CÓDIGO -----------------
 
@@ -151,19 +216,45 @@ export default {
 
       window.addEventListener("locationchange", () => {
         updateOverlayVisibility();
+        // Ejecutar eliminación de encuesta en cada cambio de página
+        setTimeout(removeSurveyElements, 100);
+        setTimeout(removeSurveyElements, 500);
+        setTimeout(removeSurveyElements, 1000);
       });
     }
 
     listenToUrlChanges();
 
-    // Observer para asegurar que overlay no desaparezca y actualizar visibilidad
+    // Observer más agresivo para eliminar encuestas
     const obs = new MutationObserver(() => {
       if (!document.body.contains(overlay)) {
         document.body.appendChild(overlay);
       }
       updateOverlayVisibility();
+      // Ejecutar eliminación cada vez que el DOM cambie
+      removeSurveyElements();
     });
-    obs.observe(document.body, { childList: true });
+    obs.observe(document.body, { childList: true, subtree: true });
+
+    // Ejecutar eliminación de encuestas al cargar la página
+    removeSurveyElements();
+    
+    // Ejecutar múltiples veces con diferentes delays
+    setTimeout(removeSurveyElements, 100);
+    setTimeout(removeSurveyElements, 500);
+    setTimeout(removeSurveyElements, 1000);
+    setTimeout(removeSurveyElements, 2000);
+    setTimeout(removeSurveyElements, 3000);
+    
+    // Ejecutar cada 2 segundos de forma continua
+    setInterval(removeSurveyElements, 2000);
+
+    // Hook equivalente a useEffect - ejecutar cuando el DOM esté completamente cargado
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', removeSurveyElements);
+    } else {
+      removeSurveyElements();
+    }
 
     // Al inicio también ocultar overlay si estamos en login/logout
     updateOverlayVisibility();
