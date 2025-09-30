@@ -11,46 +11,100 @@ const PDFTemplate = ({ data, eventStatus }) => {
   const { evento, productos } = data;
   const currentDate = new Date().toLocaleString();
 
-  // 🔹 1. Ordenar productos por categoría y luego por nombre
-  const productosOrdenados = [...(productos || [])].sort((a, b) => {
-    // comparar categoría
-    const catA = (a.categoria || '').toLowerCase();
-    const catB = (b.categoria || '').toLowerCase();
-    if (catA < catB) return -1;
-    if (catA > catB) return 1;
-
-    // comparar nombre dentro de la misma categoría
-    const nameA = (a.attributes?.Nombre || '').toLowerCase();
-    const nameB = (b.attributes?.Nombre || '').toLowerCase();
-    if (nameA < nameB) return -1;
-    if (nameA > nameB) return 1;
-
+  // 🔹 1. Función para ordenar alfanuméricamente (A-Z, 0-9)
+  const sortAlphanumeric = (a, b) => {
+    const aStr = String(a).toLowerCase();
+    const bStr = String(b).toLowerCase();
+    
+    // Separar números y letras para ordenamiento natural
+    const regex = /(\d+|\D+)/g;
+    const aParts = aStr.match(regex) || [];
+    const bParts = bStr.match(regex) || [];
+    
+    const maxLength = Math.max(aParts.length, bParts.length);
+    
+    for (let i = 0; i < maxLength; i++) {
+      const aPart = aParts[i] || '';
+      const bPart = bParts[i] || '';
+      
+      // Si ambas partes son números, comparar numéricamente
+      if (/^\d+$/.test(aPart) && /^\d+$/.test(bPart)) {
+        const diff = parseInt(aPart) - parseInt(bPart);
+        if (diff !== 0) return diff;
+      } else {
+        // Comparar alfabéticamente
+        if (aPart < bPart) return -1;
+        if (aPart > bPart) return 1;
+      }
+    }
+    
     return 0;
+  };
+
+  // 🔹 2. Ordenar productos por nombre usando ordenamiento alfanumérico
+  const productosOrdenados = [...(productos || [])].sort((a, b) => {
+    const nameA = a.attributes?.Nombre || '';
+    const nameB = b.attributes?.Nombre || '';
+    return sortAlphanumeric(nameA, nameB);
   });
 
-  // 🔹 Agrupar productos ordenados en páginas
-  const gruposProductos = [];
-  if (productosOrdenados.length) {
+  // 🔹 3. Agrupar productos por categoría manteniendo el orden
+  const productosPorCategoria = {};
+  productosOrdenados.forEach(producto => {
+    const categoria = producto.categoria || 'Sin categoría';
+    if (!productosPorCategoria[categoria]) {
+      productosPorCategoria[categoria] = [];
+    }
+    productosPorCategoria[categoria].push(producto);
+  });
+
+  // 🔹 4. Ordenar las categorías alfabéticamente
+  const categoriasOrdenadas = Object.keys(productosPorCategoria).sort((a, b) => 
+    sortAlphanumeric(a, b)
+  );
+
+  // 🔹 5. Crear páginas - una página por categoría
+  const paginasPorCategoria = [];
+  categoriasOrdenadas.forEach(categoria => {
+    const productosCategoria = productosPorCategoria[categoria];
+    
+    // Dividir productos de la categoría en páginas si es necesario
     let start = 0;
-    let firstPageSize = 19;
-    let nextPageSize = 26;
-
-    gruposProductos.push(productosOrdenados.slice(start, firstPageSize));
-    start = firstPageSize;
-
-    while (start < productosOrdenados.length) {
-      gruposProductos.push(productosOrdenados.slice(start, start + nextPageSize));
+    let firstPageSize = 19; // Primera página con header
+    let nextPageSize = 26;  // Páginas siguientes sin header
+    
+    // Primera página de la categoría (con header si es la primera categoría general)
+    const isFirstCategory = categoria === categoriasOrdenadas[0];
+    const currentPageSize = isFirstCategory ? firstPageSize : nextPageSize;
+    
+    paginasPorCategoria.push({
+      categoria,
+      productos: productosCategoria.slice(start, currentPageSize),
+      isFirstPage: isFirstCategory,
+      isFirstPageOfCategory: true
+    });
+    start = currentPageSize;
+    
+    // Páginas adicionales de la categoría si es necesario
+    while (start < productosCategoria.length) {
+      paginasPorCategoria.push({
+        categoria,
+        productos: productosCategoria.slice(start, start + nextPageSize),
+        isFirstPage: false,
+        isFirstPageOfCategory: false
+      });
       start += nextPageSize;
     }
-  }
+  });
 
-  const totalPages = gruposProductos.length;
+  const totalPages = paginasPorCategoria.length;
 
   return (
     <div id="pdf-content" className="pdf-template">
-      {gruposProductos.map((grupo, pageIndex) => (
-        <div key={pageIndex} className="pdf-page">
-          {pageIndex === 0 && (
+      {paginasPorCategoria.map((pagina, pageIndex) => (
+        <div key={pageIndex} className={`pdf-page ${pageIndex > 0 ? 'page-break' : ''}`}>
+          {/* Header solo en la primera página */}
+          {pagina.isFirstPage && (
             <>
               <div className="header">
                 <img src={logo} alt="Logo" className="pdf-logo" />
@@ -78,10 +132,15 @@ const PDFTemplate = ({ data, eventStatus }) => {
                 </div>
                 <p><strong>Total de productos:</strong> {productosOrdenados.length}</p>
               </div>
-
-              <h2 className="subtitle">Equipos del evento:</h2>
             </>
           )}
+
+          {/* Título de categoría */}
+          <h2 className="subtitle">
+            {pagina.isFirstPageOfCategory 
+              ? `Categoría: ${pagina.categoria}` 
+              : `${pagina.categoria} (continuación)`}
+          </h2>
 
           <table className="table">
             <thead>
@@ -99,7 +158,7 @@ const PDFTemplate = ({ data, eventStatus }) => {
               </tr>
             </thead>
             <tbody>
-              {grupo.map((producto) => (
+              {pagina.productos.map((producto) => (
                 <tr key={producto?.id}>
                   <td>{producto?.attributes?.Sku}</td>
                   <td>{producto?.attributes?.Nombre}</td>

@@ -12,6 +12,11 @@
     /* padding-bottom removido porque footer ya no es absolute */
 }
 
+.pdf-page {
+    min-height: 1123px;
+    position: relative;
+}
+
 .header {
     display: flex;
     justify-content: space-between;
@@ -49,6 +54,8 @@
     margin: 25px 0 15px 0;
     border-bottom: 1px solid #ddd;
     padding-bottom: 5px;
+    color: #333;
+    font-weight: bold;
 }
 
 .table {
@@ -97,6 +104,12 @@
     margin-top: 10px;
 }
 
+/* ===== SALTO DE PÁGINA FORZADO ===== */
+.page-break {
+    page-break-before: always !important;
+    break-before: page !important;
+}
+
 /* Configuraciones específicas para impresión */
 @media print {
     .pdf-template {
@@ -108,9 +121,21 @@
         page-break-inside: auto;
     }
     
+    .pdf-page {
+        min-height: auto;
+        page-break-inside: avoid;
+    }
+    
+    /* Forzar salto de página entre categorías */
+    .page-break {
+        page-break-before: always !important;
+        break-before: page !important;
+    }
+    
     /* Evitar cortes en elementos importantes */
     .header, .title, .subtitle {
         page-break-after: avoid;
+        break-after: avoid;
     }
     
     .table {
@@ -119,15 +144,19 @@
     
     .table tr {
         page-break-inside: avoid;
+        break-inside: avoid;
     }
     
     .signatures {
         page-break-before: avoid;
         page-break-inside: avoid;
+        break-before: avoid;
+        break-inside: avoid;
     }
     
     .footer {
         page-break-inside: avoid;
+        break-inside: avoid;
     }
 }
 
@@ -162,15 +191,4 @@ p, .table td {
 .large-table td {
     padding: 6px;
     font-size: 10px;
-}
-
-/* ===== NUEVO: Forzar salto de página manual ===== */
-.page-break {
-  page-break-after: always; /* para navegadores antiguos */
-  break-after: page;        /* para navegadores modernos */
-}
-
-.table tr.break-here {
-  page-break-after: always;
-  break-after: page;
 }
