@@ -130,7 +130,7 @@ const PDFTemplate = ({ data, eventStatus }) => {
                   <p><strong>Hora inicio:</strong> {evento?.attributes?.HoraInicio}</p>
                   <p><strong>Hora fin:</strong> {evento?.attributes?.HoraFin}</p>
                 </div>
-                <p><strong>Total de productos:</strong> {productosOrdenados.length}</p>
+                <p><strong>Total de equipos:</strong> {productosOrdenados.length}</p>
               </div>
             </>
           )}
@@ -146,7 +146,7 @@ const PDFTemplate = ({ data, eventStatus }) => {
   <thead>
     <tr>
       <th>SKU</th>
-      <th>Producto</th>
+      <th>Equipo</th>
       <th>Descripción</th>
       <th>Cantidad solicitada</th>
       {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && (
@@ -191,7 +191,7 @@ const PDFTemplate = ({ data, eventStatus }) => {
                   <p>Firma del receptor: _________________________</p>
                 </div>
               </div>
-              <p className="generated-info">Información generada desde sistema</p>
+              <p className="generated-info">Información generada desde sistema123</p>
             </div>
           )}
 
