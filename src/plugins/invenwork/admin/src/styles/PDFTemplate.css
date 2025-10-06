@@ -192,3 +192,12 @@ p, .table td {
     padding: 6px;
     font-size: 10px;
 }
+
+.descripcion-cell {
+  white-space: normal;          /* Permite saltos de línea */
+  word-wrap: break-word;        /* Evita desbordes horizontales */
+  max-width: 250px;             /* Limita el ancho para mantener la tabla ordenada */
+  font-size: 12px;              /* Un poco más pequeña que el resto */
+  color: #333;
+  line-height: 1.3;
+}

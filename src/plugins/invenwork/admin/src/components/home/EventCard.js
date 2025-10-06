@@ -114,26 +114,32 @@ const EventCard = ({ datosForm, setIsCardVisible, eventStatus }) => {
       const data = await response.json();
 
       const categoriaCatidadUpdateProducts = await Promise.all(
-        datosForm.productos.map(async (product, index) => {
-          const productData = data.data[index];
-          let categoria = 'Sin categoría';
+  datosForm.productos.map(async (product, index) => {
+    const productData = data.data[index];
+    let categoria = 'Sin categoría';
+    let descripcion = 'Sin descripción disponible';
 
-          try {
-            const catResponse = await fetch(`/api/productos/${product.id}?populate=categoria`);
-            const catData = await catResponse.json();
-            categoria = catData?.data?.attributes?.categoria?.data?.attributes?.Nombre || 'Sin categoría';
-          } catch (error) {
-            console.error('Error obteniendo categoría:', error);
-          }
+    try {
+      const prodResponse = await fetch(`/api/productos/${product.id}?populate=categoria`);
+      const prodData = await prodResponse.json();
+      const attributes = prodData?.data?.attributes || {};
 
-          return {
-            ...product,
-            cantidad_retornada: productData?.attributes?.cantidad_retornada || 0,
-            cantidad_faltante: productData?.attributes?.cantidad_faltante || 0,
-            categoria: categoria
-          };
-        })
-      );
+      categoria = attributes?.categoria?.data?.attributes?.Nombre || 'Sin categoría';
+      descripcion = attributes?.Descripcion || 'Sin descripción disponible';
+    } catch (error) {
+      console.error('Error obteniendo información del producto:', error);
+    }
+
+    return {
+      ...product,
+      cantidad_retornada: productData?.attributes?.cantidad_retornada || 0,
+      cantidad_faltante: productData?.attributes?.cantidad_faltante || 0,
+      categoria,
+      descripcion,
+    };
+  })
+);
+
 
       const datosFormUpdate = { ...datosForm, productos: categoriaCatidadUpdateProducts };
       setProductosFormFinishEvent(categoriaCatidadUpdateProducts);

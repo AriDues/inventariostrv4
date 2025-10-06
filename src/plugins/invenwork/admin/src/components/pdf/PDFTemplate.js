@@ -143,37 +143,42 @@ const PDFTemplate = ({ data, eventStatus }) => {
           </h2>
 
           <table className="table">
-            <thead>
-              <tr>
-                <th>SKU</th>
-                <th>Producto</th>
-                <th>Cantidad solicitada</th>
-                {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && (
-                  <th>Cantidad devuelta</th>
-                )}
-                {(eventStatus === nameStatus.finishParcial) && (
-                  <th>Cantidad faltante</th>
-                )}
-                <th>Categoría</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pagina.productos.map((producto) => (
-                <tr key={producto?.id}>
-                  <td>{producto?.attributes?.Sku}</td>
-                  <td>{producto?.attributes?.Nombre}</td>
-                  <td>{producto?.quantity}</td>
-                  {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && (
-                    <td>{producto?.cantidad_retornada}</td>
-                  )}
-                  {(eventStatus === nameStatus.finishParcial) && (
-                    <td>{producto?.cantidad_faltante}</td>
-                  )}
-                  <td>{producto?.categoria}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+  <thead>
+    <tr>
+      <th>SKU</th>
+      <th>Producto</th>
+      <th>Descripción</th>
+      <th>Cantidad solicitada</th>
+      {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && (
+        <th>Cantidad devuelta</th>
+      )}
+      {(eventStatus === nameStatus.finishParcial) && (
+        <th>Cantidad faltante</th>
+      )}
+      <th>Categoría</th>
+    </tr>
+  </thead>
+  <tbody>
+    {pagina.productos.map((producto) => (
+      <tr key={producto?.id}>
+        <td>{producto?.attributes?.Sku}</td>
+        <td>{producto?.attributes?.Nombre}</td>
+        <td className="descripcion-cell">
+          {producto?.descripcion || producto?.attributes?.Descripcion || "Sin descripción"}
+        </td>
+        <td>{producto?.quantity}</td>
+        {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && (
+          <td>{producto?.cantidad_retornada ?? "-"}</td>
+        )}
+        {(eventStatus === nameStatus.finishParcial) && (
+          <td>{producto?.cantidad_faltante ?? "-"}</td>
+        )}
+        <td>{producto?.categoria}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
 
           {/* Footer solo en la última página */}
           {pageIndex === totalPages - 1 && (
