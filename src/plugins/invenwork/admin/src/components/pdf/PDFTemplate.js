@@ -15,40 +15,32 @@ const PDFTemplate = ({ data, eventStatus }) => {
   const sortAlphanumeric = (a, b) => {
     const aStr = String(a).toLowerCase();
     const bStr = String(b).toLowerCase();
-    
-    // Separar números y letras para ordenamiento natural
     const regex = /(\d+|\D+)/g;
     const aParts = aStr.match(regex) || [];
     const bParts = bStr.match(regex) || [];
-    
     const maxLength = Math.max(aParts.length, bParts.length);
-    
     for (let i = 0; i < maxLength; i++) {
       const aPart = aParts[i] || '';
       const bPart = bParts[i] || '';
-      
-      // Si ambas partes son números, comparar numéricamente
       if (/^\d+$/.test(aPart) && /^\d+$/.test(bPart)) {
         const diff = parseInt(aPart) - parseInt(bPart);
         if (diff !== 0) return diff;
       } else {
-        // Comparar alfabéticamente
         if (aPart < bPart) return -1;
         if (aPart > bPart) return 1;
       }
     }
-    
     return 0;
   };
 
-  // 🔹 2. Ordenar productos por nombre usando ordenamiento alfanumérico
+  // 🔹 2. Ordenar productos
   const productosOrdenados = [...(productos || [])].sort((a, b) => {
     const nameA = a.attributes?.Nombre || '';
     const nameB = b.attributes?.Nombre || '';
     return sortAlphanumeric(nameA, nameB);
   });
 
-  // 🔹 3. Agrupar productos por categoría manteniendo el orden
+  // 🔹 3. Agrupar productos por categoría
   const productosPorCategoria = {};
   productosOrdenados.forEach(producto => {
     const categoria = producto.categoria || 'Sin categoría';
@@ -58,25 +50,20 @@ const PDFTemplate = ({ data, eventStatus }) => {
     productosPorCategoria[categoria].push(producto);
   });
 
-  // 🔹 4. Ordenar las categorías alfabéticamente
+  // 🔹 4. Ordenar categorías
   const categoriasOrdenadas = Object.keys(productosPorCategoria).sort((a, b) => 
     sortAlphanumeric(a, b)
   );
 
-  // 🔹 5. Crear páginas - una página por categoría
+  // 🔹 5. Crear páginas
   const paginasPorCategoria = [];
   categoriasOrdenadas.forEach(categoria => {
     const productosCategoria = productosPorCategoria[categoria];
-    
-    // Dividir productos de la categoría en páginas si es necesario
     let start = 0;
-    let firstPageSize = 19; // Primera página con header
-    let nextPageSize = 26;  // Páginas siguientes sin header
-    
-    // Primera página de la categoría (con header si es la primera categoría general)
+    let firstPageSize = 19; 
+    let nextPageSize = 26;  
     const isFirstCategory = categoria === categoriasOrdenadas[0];
     const currentPageSize = isFirstCategory ? firstPageSize : nextPageSize;
-    
     paginasPorCategoria.push({
       categoria,
       productos: productosCategoria.slice(start, currentPageSize),
@@ -84,8 +71,6 @@ const PDFTemplate = ({ data, eventStatus }) => {
       isFirstPageOfCategory: true
     });
     start = currentPageSize;
-    
-    // Páginas adicionales de la categoría si es necesario
     while (start < productosCategoria.length) {
       paginasPorCategoria.push({
         categoria,
@@ -143,57 +128,54 @@ const PDFTemplate = ({ data, eventStatus }) => {
           </h2>
 
           <table className="table">
-  <thead>
-    <tr>
-      <th>SKU</th>
-      <th>Equipo</th>
-      <th>Descripción</th>
-      <th>Cantidad solicitada</th>
-      {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && (
-        <th>Cantidad devuelta</th>
-      )}
-      {(eventStatus === nameStatus.finishParcial) && (
-        <th>Cantidad faltante</th>
-      )}
-      <th>Categoría</th>
-    </tr>
-  </thead>
-  <tbody>
-    {pagina.productos.map((producto) => (
-      <tr key={producto?.id}>
-        <td>{producto?.attributes?.Sku}</td>
-        <td>{producto?.attributes?.Nombre}</td>
-        <td className="descripcion-cell">
-          {producto?.descripcion || producto?.attributes?.Descripcion || "Sin descripción"}
-        </td>
-        <td>{producto?.quantity}</td>
-        {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && (
-          <td>{producto?.cantidad_retornada ?? "-"}</td>
-        )}
-        {(eventStatus === nameStatus.finishParcial) && (
-          <td>{producto?.cantidad_faltante ?? "-"}</td>
-        )}
-        <td>{producto?.categoria}</td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+            <thead>
+              <tr>
+                <th>SKU</th>
+                <th>Equipo</th>
+                <th>Descripción</th>
+                <th>Cantidad solicitada</th>
+                {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && (
+                  <th>Cantidad devuelta</th>
+                )}
+                {(eventStatus === nameStatus.finishParcial) && (
+                  <th>Cantidad faltante</th>
+                )}
+                <th>Categoría</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pagina.productos.map((producto) => (
+                <tr key={producto?.id}>
+                  <td>{producto?.attributes?.Sku}</td>
+                  <td>{producto?.attributes?.Nombre}</td>
+                  <td className="descripcion-cell">
+                    {producto?.descripcion || producto?.attributes?.Descripcion || "Sin descripción"}
+                  </td>
+                  <td>{producto?.quantity}</td>
+                  {(eventStatus === nameStatus.finish || eventStatus === nameStatus.finishParcial) && (
+                    <td>{producto?.cantidad_retornada ?? "-"}</td>
+                  )}
+                  {(eventStatus === nameStatus.finishParcial) && (
+                    <td>{producto?.cantidad_faltante ?? "-"}</td>
+                  )}
+                  <td>{producto?.categoria}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-
-          {/* Footer solo en la última página */}
-          {pageIndex === totalPages - 1 && (
-            <div className="footer">
-              <div className="signatures">
-                <div className="signature-box">
-                  <p>Firma del encargado: _________________________</p>
-                </div>
-                <div className="signature-box">
-                  <p>Firma del receptor: _________________________</p>
-                </div>
+          {/* Footer en todas las páginas */}
+          <div className="footer">
+            <div className="signatures">
+              <div className="signature-box">
+                <p>Firma del encargado: _________________________</p>
               </div>
-              <p className="generated-info">Información generada desde sistema123</p>
+              <div className="signature-box">
+                <p>Firma del receptor: _________________________</p>
+              </div>
             </div>
-          )}
+            <p className="generated-info">Información generada desde sistema</p>
+          </div>
 
           {/* Número de página */}
           <p className="page-number">{pageIndex + 1} de {totalPages}</p>

@@ -1,203 +1,166 @@
 .pdf-logo {
-  height: 50px; /* ajusta el tamaño según necesites */
+  height: 50px;
   object-fit: contain;
 }
 
 .pdf-template {
-    background: white;
-    padding: 20px;
-    width: 794px;
-    min-height: 1123px;
-    position: relative;
-    /* padding-bottom removido porque footer ya no es absolute */
+  background: white;
+  padding: 20px;
+  width: 794px;
+  min-height: 1123px;
+  position: relative;
+  padding-bottom: 150px; /* espacio reservado para footer */
 }
 
 .pdf-page {
-    min-height: 1123px;
-    position: relative;
+  min-height: 1123px;
+  position: relative;
+  page-break-after: always;
 }
 
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid #000;
-    padding-bottom: 15px;
-    margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #000;
+  padding-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .header h2 {
-    margin: 0;
-    font-size: 22px;
+  margin: 0;
+  font-size: 22px;
 }
 
 .current-date {
-    margin: 0;
-    font-size: 14px;
+  margin: 0;
+  font-size: 14px;
 }
 
 .title {
-    font-size: 24px;
-    margin-bottom: 15px;
-    text-align: center;
+  font-size: 24px;
+  margin-bottom: 15px;
+  text-align: center;
 }
 
 .details-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
 .subtitle {
-    font-size: 18px;
-    margin: 25px 0 15px 0;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 5px;
-    color: #333;
-    font-weight: bold;
+  font-size: 18px;
+  margin: 25px 0 15px 0;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+  color: #333;
+  font-weight: bold;
 }
 
 .table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 30px;
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
 }
 
 .table th, .table td {
-    border: 1px solid #000;
-    padding: 10px;
-    text-align: left;
+  border: 1px solid #000;
+  padding: 10px;
+  text-align: left;
 }
 
 .table th {
-    background-color: #f0f0f0;
-    font-weight: 600;
+  background-color: #f0f0f0;
+  font-weight: 600;
 }
 
+/* === FOOTER FIJO EN TODAS LAS PÁGINAS === */
 .footer {
-    position: relative; /* cambiado de absolute a relative */
-    margin-top: 20px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 40px;
+  border-top: 1px solid #000;
+  background: white;
+  text-align: center;
+  font-size: 12px;
 }
 
 .signatures {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 50px;
-    margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
 }
 
 .signature-box {
-    width: 45%;
+  width: 45%;
+  text-align: left;
 }
 
 .generated-info {
-    font-size: 12px;
-    color: #666;
-    margin-top: 20px;
+  font-size: 11px;
+  color: #666;
+  margin-top: 10px;
+  text-align: center;
 }
 
+/* Número de página */
 .page-number {
-    text-align: right;
-    font-size: 12px;
-    color: #666;
-    margin-top: 10px;
+  position: absolute;
+  bottom: 5px;
+  right: 20px;
+  font-size: 12px;
+  color: #666;
 }
 
 /* ===== SALTO DE PÁGINA FORZADO ===== */
 .page-break {
-    page-break-before: always !important;
-    break-before: page !important;
+  page-break-before: always !important;
+  break-before: page !important;
 }
 
-/* Configuraciones específicas para impresión */
+/* Configuraciones de impresión */
 @media print {
-    .pdf-template {
-        width: 100%;
-        max-width: none;
-        min-height: auto;
-        padding: 15mm;
-        margin: 0;
-        page-break-inside: auto;
-    }
-    
-    .pdf-page {
-        min-height: auto;
-        page-break-inside: avoid;
-    }
-    
-    /* Forzar salto de página entre categorías */
-    .page-break {
-        page-break-before: always !important;
-        break-before: page !important;
-    }
-    
-    /* Evitar cortes en elementos importantes */
-    .header, .title, .subtitle {
-        page-break-after: avoid;
-        break-after: avoid;
-    }
-    
-    .table {
-        page-break-inside: auto;
-    }
-    
-    .table tr {
-        page-break-inside: avoid;
-        break-inside: avoid;
-    }
-    
-    .signatures {
-        page-break-before: avoid;
-        page-break-inside: avoid;
-        break-before: avoid;
-        break-inside: avoid;
-    }
-    
-    .footer {
-        page-break-inside: avoid;
-        break-inside: avoid;
-    }
+  .pdf-template {
+    width: 100%;
+    max-width: none;
+    min-height: auto;
+    padding: 15mm;
+    margin: 0;
+  }
+
+  .pdf-page {
+    page-break-inside: avoid;
+  }
+
+  .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+  }
+
+  .signatures, .footer, .page-number {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
 }
 
 @page {
-    size: A4;
-    margin: 15mm;
+  size: A4;
+  margin: 15mm;
 }
 
-/* Evitar viudas y huérfanas */
-p, .table td {
-    orphans: 2;
-    widows: 2;
-}
-
-/* Mejorar el espaciado para evitar cortes */
-.content-section {
-    margin-bottom: 20px;
-    page-break-inside: avoid;
-}
-
-/* Asegurar que el contenido no se desborde */
-* {
-    box-sizing: border-box;
-}
-
-/* Configuración específica para tablas grandes */
-.large-table {
-    font-size: 10px;
-}
-
-.large-table th, 
-.large-table td {
-    padding: 6px;
-    font-size: 10px;
-}
-
+/* Desbordes y legibilidad */
 .descripcion-cell {
-  white-space: normal;          /* Permite saltos de línea */
-  word-wrap: break-word;        /* Evita desbordes horizontales */
-  max-width: 250px;             /* Limita el ancho para mantener la tabla ordenada */
-  font-size: 12px;              /* Un poco más pequeña que el resto */
+  white-space: normal;
+  word-wrap: break-word;
+  max-width: 250px;
+  font-size: 14px;
   color: #333;
   line-height: 1.3;
 }
