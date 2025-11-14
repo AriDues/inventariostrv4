@@ -18,6 +18,11 @@
   page-break-after: always;
 }
 
+/* Más resguardo en la primera página para que la tabla no baje tanto */
+.pdf-page.first-page {
+  padding-bottom: 180px; /* extra espacio de seguridad en la primera página */
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -63,6 +68,10 @@
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 30px;
+}
+
+.pdf-page.first-page .table {
+  margin-bottom: 15px; /* menos margen en primera página */
 }
 
 .table th, .table td {
@@ -134,6 +143,11 @@
 
   .pdf-page {
     page-break-inside: avoid;
+  }
+
+  /* más resguardo en impresión para la primera página */
+  .pdf-page.first-page {
+    padding-bottom: 48mm;
   }
 
   .footer {
